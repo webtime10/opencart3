@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  web_oc3:
+    build: .
+    container_name: opencart3_web
+    restart: unless-stopped
+    ports:
+      - "8184:80"
+    volumes:
+      - ./:/var/www/html
+      - ../test/image/catalog/fashion:/var/www/html/image/catalog/fashion
+    depends_on:
+      - db_oc3
+
+  db_oc3:
+    image: mysql:5.7
+    container_name: opencart3_db
+    restart: unless-stopped
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_oc3
+      MYSQL_DATABASE: opencart3_db
+      MYSQL_USER: opencart3_user
+      MYSQL_PASSWORD: opencart3_password
+    volumes:
+      - opencart3_db_data:/var/lib/mysql
+
+  # ==========================================
+  # phpMyAdmin
+  # ==========================================
+  phpmyadmin_oc3:
+    image: phpmyadmin/phpmyadmin
+    container_name: opencart3_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8084:80"             # <--- Порт для входа в phpMyAdmin
+    environment:
+      PMA_HOST: db_oc3        # Указываем phpMyAdmin к какой базе подключаться
+      PMA_PORT: 3306
+    depends_on:
+      - db_oc3
+
+volumes:
+  opencart3_db_data:

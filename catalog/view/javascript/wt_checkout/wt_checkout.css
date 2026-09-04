@@ -1,0 +1,43 @@
+.wt-checkout-columns {
+	margin-top: 15px;
+}
+
+.wt-checkout-block {
+	margin-bottom: 20px;
+}
+
+.wt-checkout-block-title {
+	margin-top: 0;
+	margin-bottom: 10px;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.wt-checkout-slot {
+	min-height: 20px;
+}
+
+.wt-checkout-place-wrap {
+	margin-top: 15px;
+	text-align: right;
+}
+
+#wt-checkout-slot-customer .buttons,
+#wt-checkout-slot-address .buttons,
+#wt-checkout-slot-shipping .buttons,
+#wt-checkout-slot-payment .buttons,
+#button-guest,
+#button-payment-address,
+#button-shipping-address,
+#button-guest-shipping,
+#button-shipping-method,
+#button-payment-method {
+	display: none !important;
+}
+
+@media (max-width: 767px) {
+	.wt-checkout-col-left,
+	.wt-checkout-col-right {
+		width: 100%;
+	}
+}

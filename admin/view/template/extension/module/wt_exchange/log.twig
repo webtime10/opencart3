@@ -1,0 +1,27 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header wt-exchange-page-header"><div class="container-fluid"><h1>{{ heading_title }} — {{ menu_log }}</h1></div></div>
+  <div class="container-fluid wt-exchange-container">
+    <p class="wt-exchange-main-menu">{% for item in top_menu %}<a href="{{ item.url }}" class="btn btn-info{% if item.active %} active{% endif %}">{{ item.text }}</a>{% endfor %}</p>
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="list-group">
+          {% for log in logs %}
+          <a href="{{ log_base }}&file={{ log.name }}" class="list-group-item">{{ log.name }} <span class="badge">{{ log.date }}</span></a>
+          {% else %}
+          <div class="list-group-item text-muted">{{ text_no_logs }}</div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="col-sm-8">
+        {% if view_log %}
+        <pre style="max-height:600px;overflow:auto">{{ view_log }}</pre>
+        {% else %}
+        <p class="text-muted">{{ text_select_log }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+<style>.wt-exchange-main-menu a{margin:0 4px 6px 0}</style>
+{{ footer }}

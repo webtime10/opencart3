@@ -1,0 +1,64 @@
+{{ header }}
+<div id="wt-checkout-page" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  {% if error_warning %}
+  <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+  </div>
+  {% endif %}
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+      <h1>{{ heading_title }}</h1>
+      <form id="wt-checkout" class="wt-checkout"
+        data-logged="{{ logged ? '1' : '0' }}"
+        data-shipping-required="{{ shipping_required ? '1' : '0' }}"
+        data-customer-route="{{ customer_route }}"
+        data-customer-save="{{ customer_save }}"
+        data-address-route="{{ address_route }}"
+        data-address-save="{{ address_save }}"
+        data-shipping-route="{{ shipping_route }}"
+        data-shipping-save="{{ shipping_save }}"
+        data-payment-route="{{ payment_route }}"
+        data-payment-save="{{ payment_save }}"
+        data-confirm-route="{{ confirm_route }}">
+        <div class="row wt-checkout-columns">
+          <div class="col-sm-6 wt-checkout-col wt-checkout-col-left">
+            {% for block in blocks_left %}
+            <div class="wt-checkout-block wt-checkout-block-{{ block.code }}">
+              <h3 class="wt-checkout-block-title">{{ block.title }}</h3>
+              <div id="wt-checkout-slot-{{ block.code }}" class="wt-checkout-slot"></div>
+            </div>
+            {% endfor %}
+          </div>
+          <div class="col-sm-6 wt-checkout-col wt-checkout-col-right">
+            {% for block in blocks_right %}
+            <div class="wt-checkout-block wt-checkout-block-{{ block.code }}">
+              <h3 class="wt-checkout-block-title">{{ block.title }}</h3>
+              <div id="wt-checkout-slot-{{ block.code }}" class="wt-checkout-slot"></div>
+            </div>
+            {% endfor %}
+            <div class="wt-checkout-block wt-checkout-block-confirm">
+              <div id="wt-checkout-slot-confirm" class="wt-checkout-slot"></div>
+              <div class="wt-checkout-place-wrap">
+                <button type="button" id="wt-checkout-place" class="btn btn-primary btn-lg">{{ button_wt_order }}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      {# Slot HTML is loaded from core checkout controllers; shipping_method and payment_method radios keep the same name attributes as default checkout. #}
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+</div>
+{{ footer }}

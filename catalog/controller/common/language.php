@@ -1,0 +1,154 @@
+<?php
+// *	@source		See SOURCE.txt for source and other copyright.
+// *	@license	GNU General Public License version 3; see LICENSE.txt
+
+class ControllerCommonLanguage extends Controller {
+	public function index() {
+		$this->load->language('common/language');
+
+		// WT Lang start
+		if ($this->config->get('module_wt_lang_status')) {
+			if (!$this->registry->get('wt_lang')) {
+				$this->load->controller('extension/module/wt_lang/initialise');
+			}
+
+			$wt_lang = $this->registry->get('wt_lang');
+
+			if ($wt_lang && $wt_lang->isActive()) {
+				$this->load->language('extension/module/wt_lang');
+				$data['languages'] = $wt_lang->getSwitcherLinks();
+				$data['text_language'] = $this->getLanguageSwitcherLabel();
+
+				foreach ($data['languages'] as $language) {
+					if ($language['current']) {
+						$data['code'] = $language['code'];
+						break;
+					}
+				}
+
+				if (!isset($data['code']) && !empty($data['languages'])) {
+					$data['code'] = $data['languages'][0]['code'];
+				}
+
+				return $this->load->view('extension/module/wt_lang_switcher', $data);
+			}
+		}
+		// WT Lang end
+
+		$data['action'] = $this->url->link('common/language/language', '', $this->request->server['HTTPS']);
+
+		$data['code'] = $this->session->data['language'];
+
+		$this->load->model('localisation/language');
+
+		$data['languages'] = array();
+
+		$results = $this->model_localisation_language->getLanguages();
+
+		foreach ($results as $result) {
+			if ($result['status']) {
+				$data['languages'][] = array(
+					'name' => $result['name'],
+					'code' => $result['code']
+				);
+			}
+		}
+
+		if (!isset($this->request->get['route'])) {
+			
+			if($this->config->get('config_seo_pro')){ 
+				$redirect_data = ['route' => 'common/home', 'url' => '', 'protocol' => $this->request->server['HTTPS']];
+				$data['redirect'] = base64_encode(json_encode($redirect_data));
+			} else {
+				$data['redirect'] = $this->url->link('common/home');
+			};
+			
+		} else {
+			$url_data = $this->request->get;
+
+			unset($url_data['_route_']);
+
+			$route = $url_data['route'];
+
+			unset($url_data['route']);
+
+			$url = '';
+
+			if ($url_data) {
+				$url = '&' . urldecode(http_build_query($url_data, '', '&'));
+			}
+			
+			if($this->config->get('config_seo_pro')){ 
+				$redirect_data = ['route' => $route, 'url' => $url, 'protocol' => $this->request->server['HTTPS']];
+				$data['redirect'] = base64_encode(json_encode($redirect_data));
+			} else {
+				$data['redirect'] = $this->url->link($route, $url, $this->request->server['HTTPS']);
+			};
+			
+		}
+
+		return $this->load->view('common/language', $data);
+	}
+
+	private function getLanguageSwitcherLabel() {
+		$code = isset($this->session->data['language']) ? $this->session->data['language'] : $this->config->get('config_language');
+		$files = array(
+			DIR_LANGUAGE . $code . '/extension/module/wt_lang.php',
+			DIR_LANGUAGE . $code . '/common/language.php',
+		);
+
+		foreach ($files as $file) {
+			if (!is_file($file)) {
+				continue;
+			}
+
+			$_ = array();
+			require($file);
+
+			if (!empty($_['text_language'])) {
+				return $_['text_language'];
+			}
+		}
+
+		return 'Language';
+	}
+
+	public function language() {
+		if($this->config->get('config_seo_pro'))
+			$this->seo_language();
+			
+		if (isset($this->request->post['code'])) {
+			$this->session->data['language'] = $this->request->post['code'];
+		}
+
+		if (isset($this->request->post['redirect']) && (strpos($this->request->post['redirect'], $this->config->get('config_url')) === 0 || strpos($this->request->post['redirect'], $this->config->get('config_ssl')) === 0)) {
+			$this->response->redirect($this->request->post['redirect']);
+		} else {
+			$this->response->redirect($this->url->link('common/home'));
+		}
+	}
+	
+	private function seo_language() {
+		if (isset($this->request->post['code'])) {
+			$this->session->data['language'] = $this->request->post['code'];
+			$languages = $this->model_localisation_language->getLanguages();
+			if (isset($languages[$this->request->post['code']])) {
+				$this->config->set('config_language_id', $languages[$this->request->post['code']]['language_id']);	
+			}
+		}
+
+		if (isset($this->request->post['redirect'])) {
+			$redirect = $this->request->post['redirect'];
+			$redirect_data = json_decode(base64_decode($redirect), true);
+			extract($redirect_data);
+			if(isset($route)&& isset($url) && isset($protocol)) {
+				$redirect_url = $this->url->link($route, $url, $protocol);
+			} else {
+				$redirect_url = $this->url->link('common/home');
+			}
+			$this->response->redirect($redirect_url);
+		} else {
+			$this->response->redirect($this->url->link('common/home'));
+		}
+	}
+}

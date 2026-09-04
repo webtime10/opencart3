@@ -1,0 +1,10 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header wt-exchange-page-header"><div class="container-fluid"><h1>{{ heading_title }} — {{ menu_support }}</h1></div></div>
+  <div class="container-fluid wt-exchange-container">
+    <p class="wt-exchange-main-menu">{% for item in top_menu %}<a href="{{ item.url }}" class="btn btn-info{% if item.active %} active{% endif %}">{{ item.text }}</a>{% endfor %}</p>
+    <div class="panel panel-default"><div class="panel-body">{{ text_about }}</div></div>
+  </div>
+</div>
+<style>.wt-exchange-main-menu a{margin:0 4px 6px 0}</style>
+{{ footer }}

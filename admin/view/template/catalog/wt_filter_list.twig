@@ -1,0 +1,199 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <a href="{{ seo_pages }}" data-toggle="tooltip" title="{{ button_seo_pages }}" class="btn btn-success"><i class="fa fa-globe"></i> {{ button_seo_pages }}</a>
+        <a href="{{ module }}" data-toggle="tooltip" title="{{ button_module }}" class="btn btn-primary"><i class="fa fa-cog"></i> {{ button_module }}</a>
+        <button type="button" data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger" onclick="confirm('{{ text_confirm }}') ? $('#form-wt-filter').submit() : false;"><i class="fa fa-trash-o"></i></button>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+      <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+      </div>
+    {% endif %}
+    {% if success %}
+      <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+      </div>
+    {% endif %}
+    <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_hint_copy|raw }}</div>
+    <div class="panel panel-default wt-filter-panel">
+      <div class="panel-heading"><i class="fa fa-list"></i> {{ text_list }}</div>
+      <div class="panel-body">
+        <div class="wt-filter-well well">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="control-label" for="input-name">{{ entry_name }}</label>
+                <input type="text" name="filter_name" value="{{ filter_name }}" placeholder="{{ entry_name }}" id="input-name" class="form-control"/>
+              </div>
+              <div class="form-group">
+                <label class="control-label" for="input-category-id">{{ entry_category }}</label>
+                <select name="filter_category_id" id="input-category-id" class="form-control">
+                  <option value="">{{ text_all }}</option>
+                  {% for category in categories %}
+                    <option value="{{ category.category_id }}"{% if category.category_id == filter_category_id %} selected="selected"{% endif %}>{{ category.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="control-label" for="input-type">{{ entry_type }}</label>
+                <select name="filter_type" id="input-type" class="form-control">
+                  <option value="">{{ text_all }}</option>
+                  {% for key, type in types %}
+                    <option value="{{ key }}"{% if key == filter_type %} selected="selected"{% endif %}>{{ type }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="control-label" for="input-status">{{ entry_status }}</label>
+                <select name="filter_status" id="input-status" class="form-control">
+                  <option value="">{{ text_all }}</option>
+                  <option value="1"{% if filter_status == '1' or filter_status == 1 %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                  <option value="0"{% if filter_status == '0' or filter_status is same as(0) %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+                </select>
+              </div>
+              <button type="button" id="button-filter" class="btn btn-primary pull-right"><i class="fa fa-filter"></i> {{ button_filter }}</button>
+            </div>
+          </div>
+        </div>
+        <form action="{{ delete }}" method="post" enctype="multipart/form-data" id="form-wt-filter">
+          <div class="table-responsive wt-filter-table-wrap">
+            <table class="table table-bordered wt-filter-list">
+              <thead>
+                <tr>
+                  <th class="wt-col-select">
+                    <input type="checkbox" class="wt-checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);"/>
+                  </th>
+                  <th class="wt-col-option text-left">
+                    <a href="{{ sort_name }}"{% if sort == 'od.name' %} class="{{ order|lower }}"{% endif %}>{{ column_name }}</a>
+                  </th>
+                  <th class="wt-col-type text-left">{{ column_type }}</th>
+                  <th class="wt-col-values text-left">{{ column_values }}</th>
+                  <th class="wt-col-categories text-left">{{ column_categories }}</th>
+                  <th class="wt-col-sort text-center">
+                    <a href="{{ sort_order }}"{% if sort == 'o.sort_order' %} class="{{ order|lower }}"{% endif %}>{{ column_sort_order }}</a>
+                  </th>
+                  <th class="wt-col-expanded text-center" colspan="2">
+                    <div class="wt-expanded-head">{{ column_expanded }}</div>
+                    <div class="wt-expanded-sub">
+                      <span title="{{ help_expanded_desktop }}" data-toggle="tooltip">{{ column_expanded_desktop }}</span>
+                      <span title="{{ help_expanded_mobile }}" data-toggle="tooltip">{{ column_expanded_mobile }}</span>
+                    </div>
+                  </th>
+                  <th class="wt-col-status text-center">{{ column_status }}</th>
+                  <th class="wt-col-action text-center">{{ column_action }}</th>
+                </tr>
+              </thead>
+              <tbody id="wt-filter-sortable">
+                {% if options %}
+                  {% for option in options %}
+                    <tr data-option-id="{{ option.option_id }}">
+                      <td class="wt-col-select">
+                        <div class="wt-select-cell">
+                          <input type="checkbox" name="selected[]" value="{{ option.option_id }}" class="wt-checkbox"{% if option.selected %} checked="checked"{% endif %}/>
+                          <span class="wt-drag-handle" title="{{ text_drag }}" data-toggle="tooltip"><i class="fa fa-bars"></i></span>
+                        </div>
+                      </td>
+                      <td class="wt-col-option text-left">
+                        <span class="wt-option-name">{{ option.name }}</span>
+                      </td>
+                      <td class="wt-col-type text-left">
+                        <div class="wt-type-select wt-type-select--{{ option.type ? option.type : 'none' }}">
+                          <select class="edit wt-type-select__control form-control" name="type" data-option-id="{{ option.option_id }}">
+                            <option value="">{{ text_none }}</option>
+                            {% for key, type in types %}
+                              <option value="{{ key }}"{% if key == option.type %} selected="selected"{% endif %}>{{ type }}</option>
+                            {% endfor %}
+                          </select>
+                          <i class="fa fa-chevron-down wt-type-select__icon"></i>
+                        </div>
+                      </td>
+                      <td class="wt-col-values text-left">
+                        <div class="wt-tags">
+                          {% for value in option.values %}
+                            <span class="wt-badge wt-badge--value">{{ value }}</span>
+                          {% endfor %}
+                          {% if option.values_extra > 0 %}
+                            <span class="wt-badge wt-badge--more" data-toggle="tooltip" title="{{ option.values_more_title|e('html_attr') }}">{{ option.values_more_label }}</span>
+                          {% endif %}
+                        </div>
+                      </td>
+                      <td class="wt-col-categories text-left">
+                        <div class="wt-tags">
+                          {% for category in option.categories %}
+                            <span class="wt-badge wt-badge--category">{{ category }}</span>
+                          {% endfor %}
+                          {% if option.categories_extra > 0 %}
+                            <span class="wt-badge wt-badge--more" data-toggle="tooltip" title="{{ option.categories_more_title|e('html_attr') }}">{{ option.categories_more_label }}</span>
+                          {% endif %}
+                        </div>
+                      </td>
+                      <td class="wt-col-sort text-center">
+                        <input type="text" name="sort_order" value="{{ option.sort_order }}" class="edit form-control wt-sort-input" data-option-id="{{ option.option_id }}" inputmode="numeric"/>
+                      </td>
+                      <td class="wt-col-expanded text-center">
+                        <label class="wt-toggle" title="{% if option.expanded_desktop %}{{ text_expanded_open }}{% else %}{{ text_expanded_closed }}{% endif %}" data-toggle="tooltip">
+                          <input type="checkbox" class="edit" name="expanded_desktop" value="1" data-option-id="{{ option.option_id }}"{% if option.expanded_desktop %} checked="checked"{% endif %}/>
+                          <span class="wt-toggle__track"><span class="wt-toggle__thumb"></span></span>
+                        </label>
+                      </td>
+                      <td class="wt-col-expanded text-center">
+                        <label class="wt-toggle" title="{% if option.expanded_mobile %}{{ text_expanded_open }}{% else %}{{ text_expanded_closed }}{% endif %}" data-toggle="tooltip">
+                          <input type="checkbox" class="edit" name="expanded_mobile" value="1" data-option-id="{{ option.option_id }}"{% if option.expanded_mobile %} checked="checked"{% endif %}/>
+                          <span class="wt-toggle__track"><span class="wt-toggle__thumb"></span></span>
+                        </label>
+                      </td>
+                      <td class="wt-col-status text-center">
+                        <label class="wt-toggle" title="{% if option.status %}{{ text_enabled }}{% else %}{{ text_disabled }}{% endif %}" data-toggle="tooltip">
+                          <input type="checkbox" class="edit" name="status" value="1" data-option-id="{{ option.option_id }}"{% if option.status %} checked="checked"{% endif %}/>
+                          <span class="wt-toggle__track"><span class="wt-toggle__thumb"></span></span>
+                        </label>
+                      </td>
+                      <td class="wt-col-action text-center">
+                        <a href="{{ option.edit }}" class="wt-icon-btn" data-toggle="tooltip" title="{{ text_edit }}">
+                          <i class="fa fa-pencil"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr class="wt-empty-row">
+                    <td class="text-center" colspan="10">{{ text_no_results }}</td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </form>
+        <div class="row wt-filter-footer">
+          <div class="col-sm-6 text-left">{{ pagination }}</div>
+          <div class="col-sm-6 text-right">{{ results }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript"><!--
+wt_filter = wt_filter || {};
+wt_filter.php = {
+  user_token: '{{ user_token }}',
+  text_enabled: '{{ text_enabled|e('js') }}',
+  text_disabled: '{{ text_disabled|e('js') }}',
+  text_expanded_open: '{{ text_expanded_open|e('js') }}',
+  text_expanded_closed: '{{ text_expanded_closed|e('js') }}'
+};
+//--></script>
+{{ footer }}

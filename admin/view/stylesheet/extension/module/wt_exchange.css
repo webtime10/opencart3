@@ -1,0 +1,38 @@
+/* WT Exchange — turquoise buttons (distinct from default OpenCart admin) */
+.wt-exchange-page-header .btn-info,
+.wt-exchange-page-header .btn-primary,
+.wt-exchange-container .btn-info,
+.wt-exchange-container .btn-primary {
+	background-color: #20b2aa;
+	border-color: #1aa39c;
+	color: #fff;
+}
+
+.wt-exchange-page-header .btn-info:hover,
+.wt-exchange-page-header .btn-info:focus,
+.wt-exchange-page-header .btn-primary:hover,
+.wt-exchange-page-header .btn-primary:focus,
+.wt-exchange-container .btn-info:hover,
+.wt-exchange-container .btn-info:focus,
+.wt-exchange-container .btn-primary:hover,
+.wt-exchange-container .btn-primary:focus {
+	background-color: #1a9e97;
+	border-color: #178f89;
+	color: #fff;
+}
+
+.wt-exchange-page-header .btn-info:active,
+.wt-exchange-page-header .btn-info.active,
+.wt-exchange-page-header .btn-primary:active,
+.wt-exchange-container .btn-info:active,
+.wt-exchange-container .btn-info.active,
+.wt-exchange-container .btn-primary:active {
+	background-color: #178f89;
+	border-color: #147f79;
+	color: #fff;
+	box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.15);
+}
+
+.wt-exchange-container .progress-bar {
+	background-color: #20b2aa;
+}

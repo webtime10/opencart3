@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  OCMOD для модуля WT Filter (OpenCart 3, Twig).
+  В архиве .ocmod.zip этот файл должен лежать в КОРНЕ как install.xml.
+-->
+<modification>
+  <name>WT Filter Modification (OpenCart 3)</name>
+  <code>wt-filter-oc3</code>
+  <version>1.1.0</version>
+  <author>WT</author>
+  <link></link>
+
+  <!-- ADMIN: product form CSS/JS + language vars -->
+  <file path="admin/controller/catalog/product.php">
+    <operation>
+      <search><![CDATA[protected function getForm() {]]></search>
+      <add position="after"><![CDATA[
+		// WT Filter start
+		$this->document->addStyle('view/stylesheet/wt_filter/wt_filter.css');
+		$this->document->addScript('view/javascript/wt_filter/wt_filter.js');
+		// WT Filter end
+      ]]></add>
+    </operation>
+    <operation>
+      <search><![CDATA[$data['text_form'] = !isset($this->request->get['product_id']) ? $this->language->get('text_add') : $this->language->get('text_edit');]]></search>
+      <add position="after"><![CDATA[
+		// WT Filter start
+		$data['tab_wt_filter'] = $this->language->get('tab_wt_filter');
+		$data['entry_values'] = $this->language->get('entry_values');
+		$data['wt_filter_select_category'] = $this->language->get('wt_filter_select_category');
+		// WT Filter end
+      ]]></add>
+    </operation>
+  </file>
+
+  <!-- ADMIN: menu -->
+  <file path="admin/controller/common/column_left.php">
+    <operation>
+      <search><![CDATA[if ($this->user->hasPermission('access', 'catalog/filter')) {]]></search>
+      <add position="before"><![CDATA[
+			// WT Filter start
+			if ($this->user->hasPermission('access', 'catalog/wt_filter')) {
+				$catalog[] = array(
+					'name'	   => $this->language->get('text_wt_filter'),
+					'href'     => $this->url->link('catalog/wt_filter', 'user_token=' . $this->session->data['user_token'], true),
+					'children' => array()
+				);
+			}
+			// WT Filter end
+      ]]></add>
+    </operation>
+  </file>
+
+  <!-- ADMIN languages en-gb -->
+  <file path="admin/language/en-gb/catalog/product.php">
+    <operation>
+      <search><![CDATA[$_['text_success']]]></search>
+      <add position="before"><![CDATA[
+// WT Filter start
+$_['entry_values']               = 'Add values for this option.';
+$_['tab_wt_filter']              = 'Filter options';
+$_['wt_filter_select_category']  = 'First select a category for this product.';
+// WT Filter end
+      ]]></add>
+    </operation>
+  </file>
+
+  <file path="admin/language/en-gb/common/column_left.php">
+    <operation>
+      <search><![CDATA[$_['text_option']]]></search>
+      <add position="before"><![CDATA[
+// WT Filter start
+$_['text_wt_filter'] = 'WT Filter';
+// WT Filter end
+      ]]></add>
+    </operation>
+  </file>
+
+  <!-- ADMIN languages uk-ua -->
+  <file path="admin/language/uk-ua/catalog/product.php">
+    <operation>
+      <search><![CDATA[$_['text_success']]]></search>
+      <add position="before"><![CDATA[
+// WT Filter start
+$_['entry_values']               = 'Додайте значення для цієї опції.';
+$_['tab_wt_filter']              = 'Опції фільтра';
+$_['wt_filter_select_category']  = 'Спочатку виберіть категорію для цього товару.';
+// WT Filter end
+      ]]></add>
+    </operation>
+  </file>
+
+  <file path="admin/language/uk-ua/common/column_left.php">
+    <operation>
+      <search><![CDATA[$_['text_option']]]></search>
+      <add position="before"><![CDATA[
+// WT Filter start
+$_['text_wt_filter'] = 'WT Filter';
+// WT Filter end
+      ]]></add>
+    </operation>
+  </file>
+
+  <!-- ADMIN: save / copy / delete product filter values -->
+  <file path="admin/model/catalog/product.php">
+    <operation>
+      <search><![CDATA[if (isset($data['image'])) {]]></search>
+      <add position="before"><![CDATA[
+		// WT Filter start
+		$this->db->query("DELETE FROM " . DB_PREFIX . "wt_filter_option_value_to_product WHERE product_id = '" . (int)$product_id . "'");
+
+		if (isset($data['wt_filter_product_option'])) {
+			foreach ($data['wt_filter_product_option'] as $option_id => $values) {
+				foreach ($values['values'] as $value_id => $value) {
+					if (isset($value['selected'])) {
+						$this->db->query("INSERT INTO " . DB_PREFIX . "wt_filter_option_value_to_product SET product_id = '" . (int)$product_id . "', option_id = '" . (int)$option_id . "', value_id = '" . (string)$value_id . "', slide_value_min = '" . (isset($value['slide_value_min']) ? (float)$value['slide_value_min'] : 0) . "', slide_value_max = '" . (isset($value['slide_value_max']) ? (float)$value['slide_value_max'] : 0) . "'");
+					}
+				}
+			}
+		}
+		// WT Filter end
+      ]]></add>
+    </operation>
+
+    <operation>
+      <search><![CDATA[$data['product_attribute'] = $this->getProductAttributes($product_id);]]></search>
+      <add position="after"><![CDATA[
+			// WT Filter start
+			$this->load->model('catalog/wt_filter');
+			if (method_exists($this->model_catalog_wt_filter, 'getProductWtFilterValues')) {
+				$data['wt_filter_product_option'] = $this->model_catalog_wt_filter->getProductWtFilterValues($product_id);
+			}
+			// WT Filter end
+      ]]></add>
+    </operation>
+
+    <operation>
+      <search><![CDATA[$this->db->query("DELETE FROM " . DB_PREFIX . "product WHERE product_id = '" . (int)$product_id . "'");]]></search>
+      <add position="after"><![CDATA[
+		// WT Filter start
+		$this->db->query("DELETE FROM " . DB_PREFIX . "wt_filter_option_value_to_product WHERE product_id = '" . (int)$product_id . "'");
+		// WT Filter end
+      ]]></add>
+    </operation>
+  </file>
+
+  <!-- ADMIN: Twig product form JS config -->
+  <file path="admin/view/template/catalog/product_form.twig">
+    <operation>
+      <search index="0"><![CDATA[<script type="text/javascript"><!--
+  // Manufacturer]]></search>
+      <add position="before"><![CDATA[
+  {# WT Filter start #}
+  <script type="text/javascript"><!--
+  wt_filter = wt_filter || {};
+  wt_filter.php = {
+  	text_select: '{{ text_select|e('js') }}',
+  	wt_filter_select_category: '{{ wt_filter_select_category|e('js') }}',
+  	entry_values: '{{ entry_values|e('js') }}',
+  	tab_wt_filter: '{{ tab_wt_filter|e('js') }}'
+  };
+
+  wt_filter.php.languages = [];
+  {% for language in languages %}
+  wt_filter.php.languages.push({
+  	'language_id': {{ language.language_id }},
+  	'name': '{{ language.name|e('js') }}',
+  	'image': '{{ language.code }}.png'
+  });
+  {% endfor %}
+  //--></script>
+  {# WT Filter end #}
+      ]]></add>
+    </operation>
+  </file>
+
+  <!-- CATALOG: early bootstrap (safe if initialise() missing later we add it) -->
+  <file path="catalog/controller/startup/maintenance.php">
+    <operation>
+      <search><![CDATA[public function index() {]]></search>
+      <add position="after"><![CDATA[
+		// WT Filter start
+		if (is_file(DIR_APPLICATION . 'controller/extension/module/wt_filter.php')) {
+			$this->load->controller('extension/module/wt_filter/initialise');
+		}
+		// WT Filter end
+      ]]></add>
+    </operation>
+  </file>
+
+  <file path="catalog/controller/startup/seo_url.php">
+    <operation>
+      <search><![CDATA[$this->url->addRewrite($this);]]></search>
+      <add position="after"><![CDATA[
+			// WT Filter start
+			if (!is_null($this->registry->get('wt_filter'))) {
+				$this->url->addRewrite($this->registry->get('wt_filter'));
+			}
+			// WT Filter end
+      ]]></add>
+    </operation>
+  </file>
+
+  <file path="catalog/model/catalog/product.php">
+    <operation>
+      <search><![CDATA[if (!empty($data['filter_manufacturer_id'])) {]]></search>
+      <add position="before"><![CDATA[
+		// WT Filter start
+		if (!empty($data['filter_wt_filter'])) {
+			$this->load->model('catalog/wt_filter');
+			$wt_filter_product_sql = $this->model_catalog_wt_filter->getProductSQL($data['filter_wt_filter']);
+			if ($wt_filter_product_sql) {
+				$sql .= $wt_filter_product_sql;
+			}
+		}
+		// WT Filter end
+      ]]></add>
+    </operation>
+  </file>
+
+  <file path="catalog/controller/product/category.php">
+    <operation>
+      <search index="0"><![CDATA[$data['breadcrumbs'] = array();]]></search>
+      <add position="before"><![CDATA[
+		// WT Filter start
+		if (isset($this->request->get['filter_wt_filter'])) {
+			$filter_wt_filter = $this->request->get['filter_wt_filter'];
+		} else {
+			$filter_wt_filter = '';
+		}
+		// WT Filter end
+      ]]></add>
+    </operation>
+
+    <operation>
+      <search><![CDATA[$product_total = $this->model_catalog_product->getTotalProducts($filter_data);]]></search>
+      <add position="before"><![CDATA[
+			// WT Filter start
+			$filter_data['filter_wt_filter'] = $filter_wt_filter;
+			// WT Filter end
+      ]]></add>
+    </operation>
+
+    <operation>
+      <search><![CDATA[if (isset($this->request->get['filter'])) {
+				$url .= '&filter=' . $this->request->get['filter'];
+			}]]></search>
+      <add position="before"><![CDATA[
+			// WT Filter start
+			if (isset($this->request->get['filter_wt_filter'])) {
+				$url .= '&filter_wt_filter=' . urlencode($this->request->get['filter_wt_filter']);
+			}
+			// WT Filter end
+      ]]></add>
+    </operation>
+  </file>
+
+  <!-- CATALOG: обёртка листинга для AJAX-замены без reload -->
+  <file path="catalog/view/theme/*/template/product/category.twig">
+    <operation>
+      <search><![CDATA[<div class="row"> {% for product in products %}]]></search>
+      <add position="replace"><![CDATA[<div id="wt-filter-results">
+      <div class="row" id="wt-filter-products"> {% for product in products %}]]></add>
+    </operation>
+    <operation>
+      <search><![CDATA[{% endfor %} </div>
+      <div class="row">
+        <div class="col-sm-6 text-left">{{ pagination }}</div>
+        <div class="col-sm-6 text-right">{{ results }}</div>
+      </div>
+      {% endif %}]]></search>
+      <add position="replace"><![CDATA[{% endfor %} </div>
+      <div class="row" id="wt-filter-pagination">
+        <div class="col-sm-6 text-left">{{ pagination }}</div>
+        <div class="col-sm-6 text-right">{{ results }}</div>
+      </div>
+      </div>
+      {% endif %}]]></add>
+    </operation>
+  </file>
+
+  <file path="system/library/document.php">
+    <operation>
+      <search><![CDATA[public function setTitle($title) {]]></search>
+      <add position="before"><![CDATA[
+	// WT Filter start
+	public function setNoindex($state = false) {
+		if ($state) {
+			$this->setRobots('noindex,nofollow');
+		}
+	}
+
+	public function isNoindex() {
+		return (strpos((string)$this->robots, 'noindex') !== false);
+	}
+	// WT Filter end
+      ]]></add>
+    </operation>
+  </file>
+
+</modification>

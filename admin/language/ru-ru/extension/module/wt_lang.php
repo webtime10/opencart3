@@ -1,0 +1,24 @@
+<?php
+$_['heading_title']        = 'WT Lang';
+$_['text_extension']       = 'Модули';
+$_['text_success']         = 'Настройки сохранены.';
+$_['text_edit']            = 'Настройки WT Lang';
+$_['text_enabled']         = 'Включено';
+$_['text_disabled']        = 'Выключено';
+$_['text_yes']             = 'Да';
+$_['text_no']              = 'Нет';
+$_['entry_status']         = 'Статус';
+$_['entry_hreflang']       = 'Теги hreflang';
+$_['entry_xdefault']       = 'x-default для главного языка';
+$_['entry_default_language'] = 'Главный язык';
+$_['column_language']      = 'Язык';
+$_['column_prefix']        = 'Префикс URL';
+$_['column_hreflang']      = 'Код hreflang';
+$_['column_status']        = 'В модуле';
+$_['help_prefix']          = 'Главный язык без префикса (site.com/). Остальные: site.com/en/…';
+$_['help_hreflang']        = 'ISO-код для &lt;link rel="alternate" hreflang="…"&gt;.';
+$_['help_default']         = 'Главный язык открывается в корне сайта без /prefix/.';
+$_['button_save']          = 'Сохранить';
+$_['button_cancel']        = 'Отмена';
+$_['error_permission']     = 'Нет прав на изменение WT Lang.';
+$_['error_prefix_duplicate'] = 'Префиксы URL должны быть уникальными.';

@@ -1,0 +1,354 @@
+{#
+  Шаблон настроек модуля WT Filter (Extensions → Modules → WT Filter).
+  Две вкладки:
+    tab-general — статус модуля + разделитель атрибутов (сохраняется кнопкой Save)
+    tab-copy    — параметры копирования + AJAX-прогресс (кнопка «Копировать»)
+#}
+{{ header }}{{ column_left }}
+<div id="content">
+  {# Шапка страницы: Save / Cancel #}
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        {# Submit формы form-module → сохранение настроек модуля #}
+        <button type="submit" form="form-module" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    {# Flash-сообщения после редиректа (ошибка / успех сохранения) #}
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    {% if success %}
+    <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        {# Форма настроек: action = route модуля модуля (POST save) #}
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-module" class="form-horizontal">
+
+          {# Переключатель вкладок #}
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab-general" data-toggle="tab">{{ tab_general }}</a></li>
+            <li><a href="#tab-copy" data-toggle="tab">{{ tab_copy }}</a></li>
+          </ul>
+
+          <div class="tab-content">
+
+            {# ========== Вкладка «Общие»: настройки, которые сохраняются в setting ========== #}
+            <div class="tab-pane active" id="tab-general">
+              {# Вкл/выкл модуля #}
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+                <div class="col-sm-10">
+                  <select name="module_wt_filter_status" id="input-status" class="form-control">
+                    {% if module_wt_filter_status %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                  </select>
+                </div>
+              </div>
+
+              {# Разделитель составных атрибутов (по умолчанию ","): «Красный, Синий» → 2 значения при копировании #}
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-attribute-separator">{{ entry_attribute_separator }}</label>
+                <div class="col-sm-10">
+                  <input type="text" name="module_wt_filter_attribute_separator" value="{{ module_wt_filter_attribute_separator }}" placeholder="," id="input-attribute-separator" class="form-control" />
+                  <p class="help-block">{{ help_attribute_separator }}</p>
+                </div>
+              </div>
+            </div>
+
+            {# ========== Вкладка «Копирование»: не сохраняется Save'ом, уходит AJAX'ом в copyFilters ========== #}
+            <div class="tab-pane" id="tab-copy">
+
+              {# Магазины, в которые привязать характеристики (copy_store[] → finalize) #}
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_store }}</label>
+                <div class="col-sm-10">
+                  <div class="well well-sm" style="height: 100px; overflow: auto;">
+                    <div class="checkbox">
+                      <label><input type="checkbox" name="copy_store[]" value="0" checked="checked" /> {{ text_default }}</label>
+                    </div>
+                    {% for store in stores %}
+                    <div class="checkbox">
+                      <label><input type="checkbox" name="copy_store[]" value="{{ store.store_id }}" /> {{ store.name }}</label>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+              {# Тип UI фильтра в словаре: checkbox / radio / select #}
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-copy-type">{{ entry_type }}</label>
+                <div class="col-sm-10">
+                  <select name="copy_type" id="input-copy-type" class="form-control">
+                    {% for type in types %}
+                    <option value="{{ type }}">{{ type|capitalize }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              {# Перед копированием очистить все wt_filter_* (шаг truncate) #}
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_copy_truncate }}</label>
+                <div class="col-sm-10">
+                  <label class="checkbox-inline"><input type="checkbox" name="copy_truncate" value="1" /> {{ text_yes }}</label>
+                </div>
+              </div>
+
+              {# Источники данных для копирования (какие шаги добавить в очередь) #}
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_copy_attribute }}</label>
+                <div class="col-sm-10">
+                  <label class="checkbox-inline"><input type="checkbox" name="copy_attribute" value="1" /> {{ text_yes }}</label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_copy_filter }}</label>
+                <div class="col-sm-10">
+                  <label class="checkbox-inline"><input type="checkbox" name="copy_filter" value="1" /> {{ text_yes }}</label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_copy_option }}</label>
+                <div class="col-sm-10">
+                  <label class="checkbox-inline"><input type="checkbox" name="copy_option" value="1" /> {{ text_yes }}</label>
+                </div>
+              </div>
+
+              {# Запуск пошагового AJAX-копирования #}
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="button" id="button-copy-filter" class="btn btn-primary" data-loading-text="{{ text_loading }}"><i class="fa fa-copy"></i> {{ button_copy }}</button>
+                </div>
+              </div>
+
+              {# Прогресс-бар (показывается только во время копирования) #}
+              <div class="form-group" id="copy-progress-wrap" style="display:none;">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <div class="progress" style="margin-bottom:8px;">
+                    <div id="copy-progress-bar" class="progress-bar progress-bar-striped active" role="progressbar" style="width:0%; min-width:2em;">0%</div>
+                  </div>
+                  <p id="copy-progress-text" class="text-muted" style="margin:0;">{{ text_loading }}</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript"><!--
+/**
+ * Клик «Копировать»:
+ * 1) валидация (магазин + хотя бы один источник)
+ * 2) сбор очереди шагов: truncate? → option? → filter? → attribute? → finalize
+ * 3) последовательные AJAX POST на extension/module/wt_filter/copyFilters
+ * 4) обновление прогресс-бара после каждого шага
+ */
+$('#button-copy-filter').on('click', function() {
+  var $button = $(this);
+  var $wrap = $('#copy-progress-wrap');
+  var $bar = $('#copy-progress-bar');
+  var $text = $('#copy-progress-text');
+
+  // Убрать старые алерты на вкладке
+  $('#tab-copy > .alert').remove();
+
+  // Нужен хотя бы один магазин
+  if (!$('input[name="copy_store[]"]:checked').length) {
+    $('#tab-copy').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_copy_store }}</div>');
+    return;
+  }
+
+  // Нужен хотя бы один источник: option / filter / attribute
+  if (!$('input[name="copy_option"]:checked').length && !$('input[name="copy_filter"]:checked').length && !$('input[name="copy_attribute"]:checked').length) {
+    $('#tab-copy').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_copy_source }}</div>');
+    return;
+  }
+
+  // Очередь шагов для модели copyFiltersStep()
+  var steps = [];
+
+  if ($('input[name="copy_truncate"]:checked').length) {
+    steps.push('truncate');
+  }
+
+  if ($('input[name="copy_option"]:checked').length) {
+    steps.push('option');
+  }
+/*
+Если галочка стоит: элемент находится, .length равен 1 (в JS любое число больше нуля расценивается как true).
+
+*/
+  if ($('input[name="copy_filter"]:checked').length) {
+    steps.push('filter');
+  }
+
+  if ($('input[name="copy_attribute"]:checked').length) {
+    steps.push('attribute');
+  }
+// steps = ['truncate', 'option', 'filter', 'attribute']; если ометили
+  // finalize всегда последний: категории, магазины, keyword
+  steps.push('finalize');
+
+  var index = 0;
+  var total = steps.length;
+
+  // Данные формы: все copy_* + разделитель атрибутов из вкладки General
+  var baseData = $('[name^=\'copy_\'], [name=\'module_wt_filter_attribute_separator\']').serialize();
+
+  // UI: кнопка busy + показать прогресс
+  $button.prop('disabled', true).button('loading');
+  $wrap.show();
+  $bar.removeClass('progress-bar-success progress-bar-danger').addClass('active').css('width', '0%').text('0%');
+  $text.text('{{ text_loading }}');
+
+  // Обновить процент и текст текущего шага
+  function setProgress(done, message) {
+    var percent = Math.round((done / total) * 100);
+    $bar.css('width', percent + '%').text(percent + '%');
+    if (message) {
+      $text.text(message);
+    }
+  }
+
+  // Выполнить следующий шаг очереди
+  function runNext() {
+    if (index >= total) {
+      return;
+    }
+
+    var step = steps[index];
+
+    $.ajax({
+      // URL контроллера OpenCart, куда отправляется запрос, с добавлением токена безопасности админки
+      url: 'index.php?route=extension/module/wt_filter/copyFilters&user_token={{ user_token }}',
+      
+      // Метод отправки данных — POST (для передачи параметров формы)
+      type: 'post',
+      
+      // Формат ответа, который ждет JS от сервера — JSON
+      dataType: 'json',
+      
+      // Данные, передаваемые на сервер: склеенная строка параметров формы + текущий шаг
+      data: baseData + '&step=' + encodeURIComponent(step),
+
+
+// 1. Шаг очистки (truncate)
+//Очищает таблицы фильтра перед заполнением, если админ отметил соответствующую галочку:
+//copy_store=0&copy_type=checkbox&copy_truncate=1&copy_attribute=1&module_wt_filter_attribute_separator=%3B&step=truncate
+//2. Шаг атрибутов (attribute)
+//Парсит атрибуты товаров из oc_product_attribute, режет их по нашему разделителю ; и записывает как отдельные фильтры:
+//copy_store=0&copy_type=checkbox&copy_truncate=1&copy_attribute=1&module_wt_filter_attribute_separator=%3B&step=attribute
+//3. Шаг опций (option)
+//Переносит стандартные опции OpenCart (размеры, цвета из oc_product_option_value) в систему фильтрации:
+//copy_store=0&copy_type=checkbox&copy_truncate=1&copy_attribute=1&module_wt_filter_attribute_separator=%3B&step=option
+
+
+
+//4. Шаг категорий (category)
+//Связывает полученные фильтры с категориями товаров, чтобы в каталоге отображались только релевантные значения:
+//copy_store=0&copy_type=checkbox&copy_truncate=1&copy_attribute=1&module_wt_filter_attribute_separator=%3B&step=category
+
+
+      // encodeURIComponent это встроенная функция JavaScript, которая кодирует строку так, чтобы её можно было безопасно передавать внутри URL или тела HTTP-запроса.
+     
+     // Функция, которая автоматически срабатывает при успешном ответе от сервера (HTTP status 200)
+      success: function(json) {
+        
+        // ПРОВЕРКА 1: Проверяем, прислал ли PHP текст ошибки в ответе json['error']
+        if (json['error']) {
+          // Разблокируем кнопку "Копировать", вернем ей стандартный текст и активное состояние
+          $button.prop('disabled', false).button('reset');
+          
+          // Убираем анимацию полоски (active) и красим прогресс-бар в красный цвет ошибки (progress-bar-danger)
+          $bar.removeClass('active').addClass('progress-bar-danger');
+          
+          // Выводим текст ошибки из ответа сервера в текстовое поле под прогресс-баром
+          $text.text(json['error']);
+          
+          // Вставляем плашку-уведомление с красным крестиком в самом верху вкладки
+          $('#tab-copy').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '</div>');
+          
+          // ПРИНУДИТЕЛЬНЫЙ ВЫХОД: Прерываем работу функции, чтобы выполнение шагов остановилось
+          return;
+        }
+
+        // Если ошибки нет: увеличиваем счетчик успешно пройденных шагов на +1
+        index++;
+        
+        // Вызываем функцию обновления ширины прогресс-бара и передаем туда текст статуса
+        setProgress(index, json['message'] || step);
+
+        // ПРОВЕРКА 2: Проверяем, закончился ли весь процесс (по флагу complete от сервера или по счетчику)
+        if (json['complete'] || index >= total) {
+          // Разблокируем кнопку "Копировать", возвращаем стандартный вид
+          $button.prop('disabled', false).button('reset');
+          
+          // Убираем анимацию и красим прогресс-бар в зеленый цвет успеха (progress-bar-success)
+          $bar.removeClass('active').addClass('progress-bar-success');
+          
+          // Пишем под прогресс-баром финальное сообщение от сервера или стандартное "Готово!"
+          $text.text(json['message'] || '{{ text_complete }}');
+          
+          // Вставляем зеленую плашку успешного завершения вверху вкладки
+          $('#tab-copy').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + (json['message'] || '{{ text_complete }}') + '</div>');
+          
+          // ПРИНУДИТЕЛЬНЫЙ ВЫХОД: Процесс полностью завершен, дальше двигаться не нужно
+          return;
+        }
+
+        // РЕКУРСИВНЫЙ ВЫЗОВ: Если это был не последний шаг, вызываем заново runNext() для запуска следующего запроса из массива
+        runNext();
+      },
+      
+      // Функция, которая срабатывает при системных сбоях (ошибка 500, таймаут, вылет интернета)
+      error: function(xhr, ajaxOptions, thrownError) {
+        // Разблокируем кнопку, чтобы администратор мог попробовать еще раз
+        $button.prop('disabled', false).button('reset');
+        
+        // Красим прогресс-бар в красный цвет аварии
+        $bar.removeClass('active').addClass('progress-bar-danger');
+        
+        // Выводим текст системной ошибки под прогресс-бар
+        $text.text(thrownError);
+        
+        // Выбрасываем стандартное модальное окно браузера alert() с полным дампом ответа сервера для отладки
+        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      }
+    });
+  }
+
+  // Старт очереди
+  runNext();
+});
+//--></script>
+{{ footer }}

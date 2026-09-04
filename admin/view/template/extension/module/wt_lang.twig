@@ -1,0 +1,143 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-wt-lang" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    {% if success %}
+    <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-wt-lang" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <select name="module_wt_lang_status" id="input-status" class="form-control">
+                {% if module_wt_lang_status %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+                {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-hreflang">{{ entry_hreflang }}</label>
+            <div class="col-sm-10">
+              <select name="module_wt_lang_hreflang" id="input-hreflang" class="form-control">
+                {% if module_wt_lang_hreflang %}
+                <option value="1" selected="selected">{{ text_yes }}</option>
+                <option value="0">{{ text_no }}</option>
+                {% else %}
+                <option value="1">{{ text_yes }}</option>
+                <option value="0" selected="selected">{{ text_no }}</option>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-xdefault">{{ entry_xdefault }}</label>
+            <div class="col-sm-10">
+              <select name="module_wt_lang_xdefault" id="input-xdefault" class="form-control">
+                {% if module_wt_lang_xdefault %}
+                <option value="1" selected="selected">{{ text_yes }}</option>
+                <option value="0">{{ text_no }}</option>
+                {% else %}
+                <option value="1">{{ text_yes }}</option>
+                <option value="0" selected="selected">{{ text_no }}</option>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ entry_default_language }}</label>
+            <div class="col-sm-10">
+              <p class="help-block">{{ help_default }}</p>
+            </div>
+          </div>
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <td class="text-center" width="80">{{ entry_default_language }}</td>
+                <td>{{ column_language }}</td>
+                <td width="160">{{ column_prefix }}</td>
+                <td width="160">{{ column_hreflang }}</td>
+                <td class="text-center" width="120">{{ column_status }}</td>
+              </tr>
+            </thead>
+            <tbody>
+              {% for language in languages %}
+              <tr>
+                <td class="text-center">
+                  <input type="radio" name="module_wt_lang_default" value="{{ language.code }}"{% if module_wt_lang_default == language.code %} checked="checked"{% endif %} />
+                </td>
+                <td>{{ language.name }} <small class="text-muted">({{ language.code }})</small></td>
+                <td>
+                  <input type="text" name="module_wt_lang_language[{{ language.code }}][prefix]" value="{{ language.prefix }}" class="form-control wt-lang-prefix" data-code="{{ language.code }}" placeholder="en" />
+                  <input type="hidden" name="module_wt_lang_language[{{ language.code }}][default]" value="0" class="wt-lang-default-flag" />
+                </td>
+                <td>
+                  <input type="text" name="module_wt_lang_language[{{ language.code }}][hreflang]" value="{{ language.hreflang }}" class="form-control" placeholder="en" />
+                </td>
+                <td class="text-center">
+                  <select name="module_wt_lang_language[{{ language.code }}][status]" class="form-control">
+                    {% if language.status %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                  </select>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <p class="help-block">{{ help_prefix }}<br/>{{ help_hreflang }}</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript"><!--
+(function () {
+  function syncDefaultPrefix() {
+    var def = $('input[name="module_wt_lang_default"]:checked').val();
+    $('.wt-lang-prefix').each(function () {
+      if ($(this).data('code') === def) {
+        $(this).val('').prop('readonly', true);
+      } else {
+        $(this).prop('readonly', false);
+      }
+    });
+  }
+  $('input[name="module_wt_lang_default"]').on('change', syncDefaultPrefix);
+  syncDefaultPrefix();
+})();
+//--></script>
+{{ footer }}

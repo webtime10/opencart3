@@ -1,0 +1,24 @@
+<?php
+$_['heading_title']        = 'WT Lang';
+$_['text_extension']       = 'Extensions';
+$_['text_success']         = 'Settings saved.';
+$_['text_edit']            = 'WT Lang settings';
+$_['text_enabled']         = 'Enabled';
+$_['text_disabled']        = 'Disabled';
+$_['text_yes']             = 'Yes';
+$_['text_no']              = 'No';
+$_['entry_status']         = 'Status';
+$_['entry_hreflang']       = 'hreflang tags';
+$_['entry_xdefault']       = 'x-default for main language';
+$_['entry_default_language'] = 'Main language';
+$_['column_language']      = 'Language';
+$_['column_prefix']        = 'URL prefix';
+$_['column_hreflang']      = 'hreflang code';
+$_['column_status']        = 'In module';
+$_['help_prefix']          = 'Main language has no prefix (site.com/). Others: site.com/en/…';
+$_['help_hreflang']        = 'ISO code for &lt;link rel="alternate" hreflang="…"&gt;.';
+$_['help_default']         = 'Main language opens at site root without /prefix/.';
+$_['button_save']          = 'Save';
+$_['button_cancel']        = 'Cancel';
+$_['error_permission']     = 'You do not have permission to modify WT Lang.';
+$_['error_prefix_duplicate'] = 'URL prefixes must be unique.';

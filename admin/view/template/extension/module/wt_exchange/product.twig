@@ -1,0 +1,360 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header wt-exchange-page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        {% if tab != 'macros' %}
+        <button type="submit" form="form-wt-product" class="btn btn-primary"><i class="fa fa-save"></i> {{ button_save }}</button>
+        {% endif %}
+        {% if tab == 'export' %}
+        <a href="{{ export_run }}&format=csv" class="btn btn-info">{{ button_export }} CSV</a>
+        <a href="{{ export_run }}&format=xml" class="btn btn-info">{{ button_export }} XML</a>
+        <a href="{{ export_run }}&format=json" class="btn btn-info">{{ button_export }} JSON</a>
+        <a href="{{ export_run }}&format=xlsx" class="btn btn-info">{{ button_export }} XLSX</a>
+        {% endif %}
+        <a href="{{ cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">{% for breadcrumb in breadcrumbs %}<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>{% endfor %}</ul>
+    </div>
+  </div>
+  <div class="container-fluid wt-exchange-container">
+    {% if error_warning %}<div class="alert alert-danger">{{ error_warning }}</div>{% endif %}
+    {% if success %}<div class="alert alert-success">{{ success }}</div>{% endif %}
+    <h4>{{ heading_title }}</h4>
+    <p class="wt-exchange-main-menu">{% for item in top_menu %}<a href="{{ item.url }}" class="btn btn-info{% if item.active %} active{% endif %}">{{ item.text }}</a>{% endfor %}</p>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <ul class="nav nav-tabs">
+          {% for key, item in product_tabs %}
+          <li{% if tab == key %} class="active"{% endif %}><a href="{{ item.href }}">{{ item.text }}</a></li>
+          {% endfor %}
+        </ul>
+        <div style="margin-top:15px">
+          {% if tab == 'setting' %}
+          <form action="{{ action }}" method="post" id="form-wt-product" class="form-horizontal">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="box-caption alert-info"><small>{{ text_default_product }}</small></div>
+                <div class="form-group">
+                  <label class="col-sm-5 control-label">{{ entry_minimum }}</label>
+                  <div class="col-sm-7"><input type="text" name="product_default[minimum]" value="{{ product_default.minimum }}" class="form-control" /></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-5 control-label">{{ entry_subtract }}</label>
+                  <div class="col-sm-7">
+                    <select name="product_default[subtract]" class="form-control">
+                      <option value="1"{% if product_default.subtract %} selected{% endif %}>{{ text_yes }}</option>
+                      <option value="0"{% if not product_default.subtract %} selected{% endif %}>{{ text_no }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-5 control-label">{{ entry_shipping }}</label>
+                  <div class="col-sm-7">
+                    <select name="product_default[shipping]" class="form-control">
+                      <option value="1"{% if product_default.shipping %} selected{% endif %}>{{ text_yes }}</option>
+                      <option value="0"{% if not product_default.shipping %} selected{% endif %}>{{ text_no }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-5 control-label">{{ entry_status }}</label>
+                  <div class="col-sm-7">
+                    <select name="product_default[status]" class="form-control">
+                      <option value="1"{% if product_default.status %} selected{% endif %}>{{ text_enabled }}</option>
+                      <option value="0"{% if not product_default.status %} selected{% endif %}>{{ text_disabled }}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="box-caption alert-info"><small>{{ text_default_options }}</small></div>
+                <p class="text-muted">{{ text_stub_options }}</p>
+              </div>
+            </div>
+          </form>
+          {% elseif tab == 'fields' %}
+          <form action="{{ action }}" method="post" id="form-wt-product" class="form-horizontal">
+            <p>{{ text_fields_help }}</p>
+            <table class="table table-bordered table-hover">
+              <thead><tr><th>{{ entry_field_code }}</th><th>{{ entry_csv_name }}</th></tr></thead>
+              <tbody>
+              {% for field in field_list %}
+              <tr>
+                <td>{{ field.label }} <small>({{ field.code }})</small></td>
+                <td><input type="text" name="product_mappings[{{ field.code }}]" value="{{ field.csv_name }}" class="form-control input-sm" /></td>
+              </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </form>
+          {% elseif tab == 'export' %}
+          <form action="{{ action }}" method="post" id="form-wt-product" class="form-horizontal">
+            <div class="row">
+              <div class="col-sm-5">
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ entry_languages }}</label>
+                  <div class="col-sm-8">
+                    <select name="language_id" class="form-control">
+                      {% for language in languages %}
+                      <option value="{{ language.language_id }}"{% if export_language_id == language.language_id %} selected{% endif %}>{{ language.name }}</option>
+                      {% endfor %}
+                    </select>
+                    <p class="help-block">{{ help_language }}</p>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ entry_encoding }}</label>
+                  <div class="col-sm-8">
+                    <select name="encoding" class="form-control">
+                      {% for code, label in encodings %}
+                      <option value="{{ code }}"{% if encoding == code %} selected{% endif %}>{{ label }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ entry_delimiter }}</label>
+                  <div class="col-sm-8">
+                    <select name="delimiter" class="form-control">
+                      <option value=";"{% if delimiter == ';' %} selected{% endif %}>;</option>
+                      <option value=","{% if delimiter == ',' %} selected{% endif %}>,</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ entry_format }}</label>
+                  <div class="col-sm-8">
+                    <select name="format" class="form-control">
+                      <option value="csv"{% if format == 'csv' %} selected{% endif %}>CSV</option>
+                      <option value="xml"{% if format == 'xml' %} selected{% endif %}>XML</option>
+                      <option value="json"{% if format == 'json' %} selected{% endif %}>JSON</option>
+                      <option value="xlsx"{% if format == 'xlsx' %} selected{% endif %}>XLSX</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ entry_category }}</label>
+                  <div class="col-sm-8">
+                    <input type="text" name="category" value="" placeholder="{{ entry_category }}" id="input-wt-category" class="form-control" />
+                    <div id="wt-export-category" class="well well-sm" style="height: 150px; overflow: auto;">
+                      {% for category in export_categories %}
+                      <div id="wt-export-category{{ category.category_id }}"><i class="fa fa-minus-circle"></i> {{ category.name }}
+                        <input type="hidden" name="category_ids[]" value="{{ category.category_id }}" />
+                      </div>
+                      {% endfor %}
+                    </div>
+                    <p class="help-block">{{ help_category_filter }}</p>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ entry_include_children }}</label>
+                  <div class="col-sm-8">
+                    <select name="include_children" class="form-control">
+                      <option value="1"{% if include_children %} selected{% endif %}>{{ text_yes }}</option>
+                      <option value="0"{% if not include_children %} selected{% endif %}>{{ text_no }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ entry_category_export }}</label>
+                  <div class="col-sm-8">
+                    <select name="category_export" class="form-control">
+                      {% for code, label in category_export_options %}
+                      <option value="{{ code }}"{% if category_export == code %} selected{% endif %}>{{ label }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ entry_category_delimiter }}</label>
+                  <div class="col-sm-8">
+                    <input type="text" name="category_delimiter" value="{{ category_delimiter }}" class="form-control" />
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-7">
+                <div class="wt-exchange-field-list">
+                  <p><a onclick="$('.wt-field-cb').prop('checked', true);">{{ text_select_all }}</a> / <a onclick="$('.wt-field-cb').prop('checked', false);">{{ text_unselect_all }}</a></p>
+                  {% for field in field_list %}
+                  <div class="checkbox">
+                    <label>
+                      <input class="wt-field-cb" type="checkbox" name="fields[]" value="{{ field.code }}"{% if field.selected %} checked{% endif %} />
+                      {{ field.label }} <small>({{ field.code }})</small>
+                    </label>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </form>
+          {% elseif tab == 'import' %}
+          <form action="{{ action }}" method="post" id="form-wt-product" class="form-horizontal" style="margin-bottom:20px">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ entry_languages }}</label>
+                  <div class="col-sm-8">
+                    <select name="language_id" class="form-control">
+                      {% for language in languages %}
+                      <option value="{{ language.language_id }}"{% if import_language_id == language.language_id %} selected{% endif %}>{{ language.name }}</option>
+                      {% endfor %}
+                    </select>
+                    <p class="help-block">{{ help_language }}</p>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ entry_encoding }}</label>
+                  <div class="col-sm-8">
+                    <select name="encoding" class="form-control">
+                      {% for code, label in encodings %}
+                      <option value="{{ code }}"{% if import_encoding == code %} selected{% endif %}>{{ label }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ entry_delimiter }}</label>
+                  <div class="col-sm-8">
+                    <select name="delimiter" class="form-control">
+                      <option value=";"{% if import_delimiter == ';' %} selected{% endif %}>;</option>
+                      <option value=","{% if import_delimiter == ',' %} selected{% endif %}>,</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ entry_mode }}</label>
+                  <div class="col-sm-8">
+                    <select name="mode" class="form-control">
+                      {% for code, label in import_modes %}
+                      <option value="{{ code }}"{% if import_mode == code %} selected{% endif %}>{{ label }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ entry_key }}</label>
+                  <div class="col-sm-8">
+                    <select name="key" class="form-control">
+                      {% for code, label in key_options %}
+                      <option value="{{ code }}"{% if import_key == code %} selected{% endif %}>{{ label }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ entry_create_categories }}</label>
+                  <div class="col-sm-8">
+                    <select name="create_categories" class="form-control">
+                      <option value="1"{% if create_categories %} selected{% endif %}>{{ text_yes }}</option>
+                      <option value="0"{% if not create_categories %} selected{% endif %}>{{ text_no }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">{{ entry_download_images }}</label>
+                  <div class="col-sm-8">
+                    <select name="download_images" class="form-control">
+                      <option value="1"{% if download_images %} selected{% endif %}>{{ text_yes }}</option>
+                      <option value="0"{% if not download_images %} selected{% endif %}>{{ text_no }}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          <hr />
+          <div id="wt-import-progress" style="display:none;margin-bottom:15px">
+            <div class="progress"><div class="progress-bar" role="progressbar" style="width:0">0%</div></div>
+            <p class="text-muted" id="wt-import-status">{{ text_import_progress }}</p>
+          </div>
+          <form action="{{ import_run }}" method="post" enctype="multipart/form-data" class="form-horizontal" id="form-wt-import-file">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ entry_file }}</label>
+              <div class="col-sm-6">
+                <input type="file" name="import_file" accept=".csv,.json,.xml,.xlsx" />
+              </div>
+              <div class="col-sm-4">
+                <button type="submit" class="btn btn-primary">{{ button_import }}</button>
+              </div>
+            </div>
+          </form>
+          {% elseif tab == 'macros' %}
+          <form action="{{ action }}" method="post" id="form-wt-product" class="form-horizontal">
+            <p>{{ text_macros_help }}</p>
+            <table class="table table-bordered">
+              <thead><tr><th>Field</th><th>{{ entry_macro_formula }}</th></tr></thead>
+              <tbody>
+              {% for field in macro_fields %}
+              <tr>
+                <td>{{ field }}</td>
+                <td><input type="text" name="product_macros[{{ field }}]" value="{{ product_macros[field]|default('') }}" class="form-control" placeholder="{ {{ field }} * 1.1 }" /></td>
+              </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </form>
+          {% else %}
+          <p>{{ text_stub }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+.wt-exchange-main-menu a{margin:0 4px 6px 0}
+.wt-exchange-field-list{max-height:420px;overflow:auto;border:1px solid #ddd;padding:10px}
+.box-caption{padding:10px;margin-bottom:15px;border:1px solid transparent;border-radius:3px}
+#wt-export-category .fa-minus-circle{cursor:pointer;color:#e35b5b}
+</style>
+{% if tab == 'export' %}
+<script type="text/javascript"><!--
+$('input[name=\'category\']').autocomplete({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=catalog/category/autocomplete&user_token={{ user_token }}&filter_name=' + encodeURIComponent(request),
+			dataType: 'json',
+			success: function(json) {
+				response($.map(json, function(item) {
+					return {
+						label: item['name'],
+						value: item['category_id']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$('input[name=\'category\']').val('');
+		$('#wt-export-category' + item['value']).remove();
+		$('#wt-export-category').append('<div id="wt-export-category' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="category_ids[]" value="' + item['value'] + '" /></div>');
+	}
+});
+
+$('#wt-export-category').delegate('.fa-minus-circle', 'click', function() {
+	$(this).parent().remove();
+});
+//--></script>
+{% endif %}
+{% if tab == 'import' and wt_exchange_job_id %}
+<script type="text/javascript"><!--
+(function(){
+  var jobId = '{{ wt_exchange_job_id }}';
+  var stepUrl = '{{ import_step }}&job_id=' + jobId + '&batch=25';
+  $('#wt-import-progress').show();
+  function runStep(){
+    $.getJSON(stepUrl, function(json){
+      if (json.error) { $('#wt-import-status').text(json.error); return; }
+      var pct = json.total ? Math.round(json.offset / json.total * 100) : 100;
+      $('#wt-import-progress .progress-bar').css('width', pct + '%').text(pct + '%');
+      $('#wt-import-status').text('Updated: ' + json.updated + ', inserted: ' + json.inserted + ', skipped: ' + json.skipped);
+      if (!json.finished) { setTimeout(runStep, 500); }
+    });
+  }
+  runStep();
+})();
+//--></script>
+{% endif %}
+{{ footer }}

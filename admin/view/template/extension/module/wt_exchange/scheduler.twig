@@ -1,0 +1,45 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header wt-exchange-page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-wt-scheduler" class="btn btn-primary"><i class="fa fa-save"></i> {{ button_save }}</button>
+        <a href="{{ cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+      </div>
+      <h1>{{ heading_title }} — {{ menu_scheduler }}</h1>
+    </div>
+  </div>
+  <div class="container-fluid wt-exchange-container">
+    {% if error_warning %}<div class="alert alert-danger">{{ error_warning }}</div>{% endif %}
+    {% if success %}<div class="alert alert-success">{{ success }}</div>{% endif %}
+    <p class="wt-exchange-main-menu">{% for item in top_menu %}<a href="{{ item.url }}" class="btn btn-info{% if item.active %} active{% endif %}">{{ item.text }}</a>{% endfor %}</p>
+    <form action="{{ action }}" method="post" id="form-wt-scheduler" class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Cron URL</label>
+        <div class="col-sm-10"><input type="text" readonly value="{{ cron_url }}" class="form-control" /></div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Cron key</label>
+        <div class="col-sm-4"><input type="text" name="cron_key" value="{{ cron_key }}" class="form-control" /></div>
+      </div>
+      <table class="table table-bordered">
+        <thead><tr><th>Enabled</th><th>Entity</th><th>Action</th></tr></thead>
+        <tbody>
+        {% for i in 0..4 %}
+        <tr>
+          <td><input type="checkbox" name="tasks[{{ i }}][enabled]" value="1"{% if tasks[i].enabled %} checked{% endif %} /></td>
+          <td>
+            <select name="tasks[{{ i }}][entity]" class="form-control">
+              {% for e in entities %}<option value="{{ e }}"{% if tasks[i].entity == e %} selected{% endif %}>{{ e }}</option>{% endfor %}
+            </select>
+          </td>
+          <td><select name="tasks[{{ i }}][action]" class="form-control"><option value="export">export</option></select></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </form>
+  </div>
+</div>
+<style>.wt-exchange-main-menu a{margin:0 4px 6px 0}</style>
+{{ footer }}
