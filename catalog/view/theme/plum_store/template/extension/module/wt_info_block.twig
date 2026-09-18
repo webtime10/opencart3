@@ -1,0 +1,51 @@
+<link rel="stylesheet" href="catalog/view/theme/plum_store/stylesheet/wt_info_block.css"/>
+<div class="wt-info-block" id="wt-info-block-{{ module }}">
+  {% if heading_title %}
+  <h2 class="wt-info-block__heading">{{ heading_title }}</h2>
+  {% endif %}
+  <div class="wt-info-block__list">
+    {% for item in items %}
+    <div class="wt-info-block__item{% if loop.first %} is-open{% endif %}">
+      <button type="button" class="wt-info-block__toggle" aria-expanded="{{ loop.first ? 'true' : 'false' }}">
+        <span class="wt-info-block__title">{{ item.title }}</span>
+        <span class="wt-info-block__icon" aria-hidden="true"></span>
+      </button>
+      <div class="wt-info-block__panel"{% if not loop.first %} hidden{% endif %}>
+        <div class="wt-info-block__body">
+          {% if item.image %}
+          <div class="wt-info-block__media">
+            <img src="{{ item.image }}" alt="{{ item.title }}" loading="lazy" decoding="async"/>
+          </div>
+          {% endif %}
+          {% if item.text %}
+          <div class="wt-info-block__text">{{ item.text }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<script>
+(function () {
+  var root = document.getElementById('wt-info-block-{{ module }}');
+  if (!root) return;
+  root.addEventListener('click', function (e) {
+    var btn = e.target.closest('.wt-info-block__toggle');
+    if (!btn || !root.contains(btn)) return;
+    var item = btn.closest('.wt-info-block__item');
+    var panel = item.querySelector('.wt-info-block__panel');
+    var open = item.classList.contains('is-open');
+    root.querySelectorAll('.wt-info-block__item.is-open').forEach(function (el) {
+      el.classList.remove('is-open');
+      el.querySelector('.wt-info-block__toggle').setAttribute('aria-expanded', 'false');
+      el.querySelector('.wt-info-block__panel').hidden = true;
+    });
+    if (!open) {
+      item.classList.add('is-open');
+      btn.setAttribute('aria-expanded', 'true');
+      panel.hidden = false;
+    }
+  });
+})();
+</script>

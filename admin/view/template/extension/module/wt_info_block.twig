@@ -1,0 +1,417 @@
+{{ header }}{{ column_left }}
+<div id="content">
+<style>
+  /* Фикс превью в модалке: SVG/placeholder иначе схлопывается в полоску */
+  #wt-info-modal .wt-info-image-picker {
+    display: block;
+  }
+  #wt-info-modal #wt-modal-thumb.img-thumbnail,
+  #wt-info-modal .wt-info-image-picker a.img-thumbnail {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 110px !important;
+    height: 110px !important;
+    min-width: 110px !important;
+    min-height: 110px !important;
+    max-width: 110px !important;
+    padding: 4px !important;
+    line-height: normal !important;
+    box-sizing: border-box;
+    overflow: hidden;
+    vertical-align: top;
+  }
+  #wt-info-modal #wt-modal-thumb-img,
+  #wt-info-modal .wt-info-image-picker a.img-thumbnail img {
+    width: 100px !important;
+    height: 100px !important;
+    min-width: 100px !important;
+    min-height: 100px !important;
+    max-width: 100px !important;
+    max-height: 100px !important;
+    object-fit: contain;
+    display: block !important;
+    margin: 0 auto;
+    background: #f5f5f5;
+  }
+  img.wt-info-preview {
+    width: 100px !important;
+    height: 100px !important;
+    max-width: 100px !important;
+    object-fit: contain;
+    display: inline-block;
+    background: #f5f5f5;
+  }
+</style>
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-module" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-module" class="form-horizontal">
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-name">{{ entry_name }}</label>
+            <div class="col-sm-10">
+              <input type="text" name="name" value="{{ name }}" placeholder="{{ entry_name }}" id="input-name" class="form-control"/>
+              {% if error_name %}<div class="text-danger">{{ error_name }}</div>{% endif %}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ entry_title }}</label>
+            <div class="col-sm-10">
+              <ul class="nav nav-tabs" id="module-title-lang">
+                {% for language in languages %}
+                <li{% if loop.first %} class="active"{% endif %}><a href="#module-title-{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}"/> {{ language.name }}</a></li>
+                {% endfor %}
+              </ul>
+              <div class="tab-content">
+                {% for language in languages %}
+                <div class="tab-pane{% if loop.first %} active{% endif %}" id="module-title-{{ language.language_id }}">
+                  <input type="text" name="module_description[{{ language.language_id }}][title]" value="{{ module_description[language.language_id].title is defined ? module_description[language.language_id].title : '' }}" placeholder="{{ entry_title }}" class="form-control"/>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <select name="status" id="input-status" class="form-control">
+                {% if status %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+                {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ text_items }}</label>
+            <div class="col-sm-10">
+              <div class="clearfix" style="margin-bottom:10px;">
+                <button type="button" id="button-wt-item-add" class="btn btn-success"><i class="fa fa-plus"></i> {{ button_item_add }}</button>
+              </div>
+              <div id="wt-info-empty" class="alert alert-info"{% if items %} style="display:none;"{% endif %}>{{ text_no_items }}</div>
+              <div class="panel-group" id="wt-info-accordion" role="tablist" aria-multiselectable="true">
+                {% for item in items %}
+                {% set row = loop.index0 %}
+                <div class="panel panel-default wt-info-item" data-row="{{ row }}">
+                  <div class="panel-heading" role="tab" id="wt-heading-{{ row }}">
+                    <h4 class="panel-title" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                      <a role="button" data-toggle="collapse" data-parent="#wt-info-accordion" href="#wt-collapse-{{ row }}" aria-expanded="false" class="wt-info-item-title-link">
+                        <i class="fa fa-chevron-down"></i>
+                        <span class="wt-info-item-label">{{ text_item }} #{{ row + 1 }}{% if item.preview_title %} — {{ item.preview_title }}{% endif %}</span>
+                      </a>
+                      <span class="btn-group btn-group-xs">
+                        <button type="button" class="btn btn-default button-wt-item-edit" title="{{ text_edit_item }}"><i class="fa fa-pencil"></i></button>
+                        <button type="button" class="btn btn-danger button-wt-item-remove" title="{{ button_remove }}"><i class="fa fa-trash-o"></i></button>
+                      </span>
+                    </h4>
+                  </div>
+                  <div id="wt-collapse-{{ row }}" class="panel-collapse collapse" role="tabpanel">
+                    <div class="panel-body">
+                      <div class="row">
+                        <div class="col-sm-3">
+                          {% if item.thumb %}
+                          <img src="{{ item.thumb }}" alt="" class="img-thumbnail wt-info-preview" style="max-width:100px;"/>
+                          {% endif %}
+                        </div>
+                        <div class="col-sm-9">
+                          <p class="wt-info-preview-text text-muted" style="white-space:pre-wrap;">{{ item.preview_text }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="wt-info-fields">
+                    {% for language in languages %}
+                    <input type="hidden" name="item[{{ row }}][description][{{ language.language_id }}][title]" value="{{ item.description[language.language_id].title is defined ? item.description[language.language_id].title : '' }}" class="wt-field-title" data-lang="{{ language.language_id }}"/>
+                    <textarea name="item[{{ row }}][description][{{ language.language_id }}][text]" class="hidden wt-field-text" data-lang="{{ language.language_id }}">{{ item.description[language.language_id].text is defined ? item.description[language.language_id].text : '' }}</textarea>
+                    {% endfor %}
+                    <input type="hidden" name="item[{{ row }}][image]" value="{{ item.image }}" class="wt-field-image"/>
+                    <input type="hidden" value="{{ item.thumb }}" class="wt-field-thumb"/>
+                    <input type="hidden" name="item[{{ row }}][sort_order]" value="{{ item.sort_order }}" class="wt-field-sort"/>
+                    <input type="hidden" name="item[{{ row }}][status]" value="{{ item.status }}" class="wt-field-status"/>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="wt-info-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="wt-info-modal-title">{{ text_add_item }}</h4>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="wt-modal-row" value=""/>
+        <ul class="nav nav-tabs" id="wt-modal-lang">
+          {% for language in languages %}
+          <li{% if loop.first %} class="active"{% endif %}><a href="#wt-modal-lang-{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}"/> {{ language.name }}</a></li>
+          {% endfor %}
+        </ul>
+        <div class="tab-content" style="padding-top:15px;">
+          {% for language in languages %}
+          <div class="tab-pane{% if loop.first %} active{% endif %}" id="wt-modal-lang-{{ language.language_id }}">
+            <div class="form-group">
+              <label>{{ entry_item_title }}</label>
+              <input type="text" class="form-control wt-modal-title" data-lang="{{ language.language_id }}" placeholder="{{ entry_item_title }}"/>
+            </div>
+            <div class="form-group">
+              <label>{{ entry_item_text }}</label>
+              <textarea rows="5" class="form-control wt-modal-text" data-lang="{{ language.language_id }}" placeholder="{{ entry_item_text }}"></textarea>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ entry_item_image }}</label>
+          <div class="wt-info-image-picker">
+            <a href="" id="wt-modal-thumb" data-toggle="image" class="img-thumbnail" style="width:110px;height:110px;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;"><img src="{{ placeholder }}" alt="" data-placeholder="{{ placeholder }}" id="wt-modal-thumb-img" style="width:100px;height:100px;object-fit:contain;display:block;"/></a>
+            <input type="hidden" id="wt-modal-image" value=""/>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>{{ entry_sort_order }}</label>
+              <input type="number" class="form-control" id="wt-modal-sort" value="0"/>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>{{ entry_status }}</label>
+              <select class="form-control" id="wt-modal-status">
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="text-danger" id="wt-modal-error" style="display:none;">{{ error_item_title }}</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{{ button_cancel }}</button>
+        <button type="button" class="btn btn-primary" id="wt-modal-apply">{{ button_item_save }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript"><!--
+(function () {
+  var itemRow = {{ items|length }};
+  var placeholder = {{ placeholder|json_encode|raw }};
+  var textItem = {{ text_item|json_encode|raw }};
+  var textAdd = {{ text_add_item|json_encode|raw }};
+  var textEdit = {{ text_edit_item|json_encode|raw }};
+  var textConfirm = {{ text_confirm_delete|json_encode|raw }};
+  var languages = [
+    {% for language in languages %}
+    { id: {{ language.language_id }}, name: {{ language.name|json_encode|raw }} }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ];
+
+  function firstTitleFromModal() {
+    var title = '';
+    $('.wt-modal-title').each(function () {
+      var v = $.trim($(this).val() || '');
+      if (!title && v) title = v;
+    });
+    return title;
+  }
+
+  function firstTextFromModal() {
+    var text = '';
+    $('.wt-modal-text').each(function () {
+      var v = $.trim($(this).val() || '');
+      if (!text && v) text = v;
+    });
+    return text;
+  }
+
+  function resetModal() {
+    $('#wt-modal-row').val('');
+    $('.wt-modal-title, .wt-modal-text').val('');
+    $('#wt-modal-image').val('');
+    $('#wt-modal-thumb-img').attr('src', placeholder);
+    $('#wt-modal-sort').val(itemRow);
+    $('#wt-modal-status').val('1');
+    $('#wt-modal-error').hide();
+    $('#wt-info-modal-title').text(textAdd);
+    $('#wt-modal-lang li:first a').tab('show');
+  }
+
+  function fillModalFromItem($item) {
+    resetModal();
+    $('#wt-info-modal-title').text(textEdit);
+    $('#wt-modal-row').val($item.data('row'));
+    $item.find('.wt-field-title').each(function () {
+      $('.wt-modal-title[data-lang="' + $(this).data('lang') + '"]').val($(this).val());
+    });
+    $item.find('.wt-field-text').each(function () {
+      $('.wt-modal-text[data-lang="' + $(this).data('lang') + '"]').val($(this).val());
+    });
+    var image = $item.find('.wt-field-image').val() || '';
+    var thumb = $item.find('.wt-field-thumb').val() || placeholder;
+    $('#wt-modal-image').val(image);
+    $('#wt-modal-thumb-img').attr('src', thumb || placeholder);
+    $('#wt-modal-sort').val($item.find('.wt-field-sort').val() || 0);
+    $('#wt-modal-status').val($item.find('.wt-field-status').val() || '1');
+  }
+
+  function buildItemHtml(row, data) {
+    var titleLabel = data.label || (textItem + ' #' + (row + 1));
+    var langsHtml = '';
+    languages.forEach(function (lang) {
+      var t = data.titles[lang.id] || '';
+      var x = data.texts[lang.id] || '';
+      langsHtml += '<input type="hidden" name="item[' + row + '][description][' + lang.id + '][title]" value="' + $('<div>').text(t).html() + '" class="wt-field-title" data-lang="' + lang.id + '"/>';
+      langsHtml += '<textarea name="item[' + row + '][description][' + lang.id + '][text]" class="hidden wt-field-text" data-lang="' + lang.id + '">' + $('<div>').text(x).html() + '</textarea>';
+    });
+
+    return '' +
+      '<div class="panel panel-default wt-info-item" data-row="' + row + '">' +
+      '  <div class="panel-heading" role="tab" id="wt-heading-' + row + '">' +
+      '    <h4 class="panel-title" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">' +
+      '      <a role="button" data-toggle="collapse" data-parent="#wt-info-accordion" href="#wt-collapse-' + row + '" aria-expanded="false" class="wt-info-item-title-link">' +
+      '        <i class="fa fa-chevron-down"></i> <span class="wt-info-item-label">' + $('<div>').text(titleLabel).html() + '</span>' +
+      '      </a>' +
+      '      <span class="btn-group btn-group-xs">' +
+      '        <button type="button" class="btn btn-default button-wt-item-edit"><i class="fa fa-pencil"></i></button>' +
+      '        <button type="button" class="btn btn-danger button-wt-item-remove"><i class="fa fa-trash-o"></i></button>' +
+      '      </span>' +
+      '    </h4>' +
+      '  </div>' +
+      '  <div id="wt-collapse-' + row + '" class="panel-collapse collapse" role="tabpanel">' +
+      '    <div class="panel-body">' +
+      '      <div class="row">' +
+      '        <div class="col-sm-3">' + (data.thumb ? '<img src="' + data.thumb + '" class="img-thumbnail wt-info-preview" style="max-width:100px;"/>' : '') + '</div>' +
+      '        <div class="col-sm-9"><p class="wt-info-preview-text text-muted" style="white-space:pre-wrap;">' + $('<div>').text(data.previewText || '').html() + '</p></div>' +
+      '      </div>' +
+      '    </div>' +
+      '  </div>' +
+      '  <div class="wt-info-fields">' + langsHtml +
+      '    <input type="hidden" name="item[' + row + '][image]" value="' + $('<div>').text(data.image || '').html() + '" class="wt-field-image"/>' +
+      '    <input type="hidden" value="' + $('<div>').text(data.thumb || placeholder).html() + '" class="wt-field-thumb"/>' +
+      '    <input type="hidden" name="item[' + row + '][sort_order]" value="' + (data.sort || 0) + '" class="wt-field-sort"/>' +
+      '    <input type="hidden" name="item[' + row + '][status]" value="' + (data.status || 1) + '" class="wt-field-status"/>' +
+      '  </div>' +
+      '</div>';
+  }
+
+  function reindexItems() {
+    $('#wt-info-accordion .wt-info-item').each(function (index) {
+      var $item = $(this);
+      $item.attr('data-row', index);
+      $item.find('[id^="wt-heading-"]').attr('id', 'wt-heading-' + index);
+      $item.find('[id^="wt-collapse-"]').attr('id', 'wt-collapse-' + index);
+      $item.find('.wt-info-item-title-link').attr('href', '#wt-collapse-' + index);
+      $item.find('.wt-info-fields').find('input, textarea').each(function () {
+        var name = $(this).attr('name');
+        if (!name) return;
+        $(this).attr('name', name.replace(/item\[\d+]/, 'item[' + index + ']'));
+      });
+      if (!$item.find('.wt-field-sort').val()) {
+        $item.find('.wt-field-sort').val(index);
+      }
+    });
+    itemRow = $('#wt-info-accordion .wt-info-item').length;
+    $('#wt-info-empty').toggle(itemRow === 0);
+  }
+
+  $('#button-wt-item-add').on('click', function () {
+    resetModal();
+    $('#wt-modal-sort').val(itemRow);
+    $('#wt-info-modal').modal('show');
+  });
+
+  $('#wt-info-accordion').on('click', '.button-wt-item-edit', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    fillModalFromItem($(this).closest('.wt-info-item'));
+    $('#wt-info-modal').modal('show');
+  });
+
+  $('#wt-info-accordion').on('click', '.button-wt-item-remove', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!confirm(textConfirm)) return;
+    $(this).closest('.wt-info-item').remove();
+    reindexItems();
+  });
+
+  $('#wt-modal-apply').on('click', function () {
+    var title = firstTitleFromModal();
+    if (!title) {
+      $('#wt-modal-error').show();
+      return;
+    }
+    $('#wt-modal-error').hide();
+
+    var titles = {};
+    var texts = {};
+    languages.forEach(function (lang) {
+      titles[lang.id] = $('.wt-modal-title[data-lang="' + lang.id + '"]').val() || '';
+      texts[lang.id] = $('.wt-modal-text[data-lang="' + lang.id + '"]').val() || '';
+    });
+
+    var data = {
+      titles: titles,
+      texts: texts,
+      image: $('#wt-modal-image').val() || '',
+      thumb: $('#wt-modal-thumb-img').attr('src') || placeholder,
+      sort: parseInt($('#wt-modal-sort').val(), 10) || 0,
+      status: $('#wt-modal-status').val() || '1',
+      label: textItem + ' — ' + title,
+      previewText: firstTextFromModal()
+    };
+
+    var editRow = $('#wt-modal-row').val();
+    if (editRow !== '') {
+      var $old = $('#wt-info-accordion .wt-info-item[data-row="' + editRow + '"]');
+      var html = buildItemHtml(parseInt(editRow, 10), data);
+      $old.replaceWith(html);
+    } else {
+      $('#wt-info-accordion').append(buildItemHtml(itemRow, data));
+      itemRow++;
+    }
+
+    reindexItems();
+    $('#wt-info-modal').modal('hide');
+  });
+})();
+//--></script>
+{{ footer }}

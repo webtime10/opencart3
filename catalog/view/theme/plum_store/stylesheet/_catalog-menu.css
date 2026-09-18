@@ -1,0 +1,700 @@
+/* Vertical catalog menu + home showcase */
+
+.catalog-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  transition: background 0.15s ease;
+}
+
+.catalog-btn:hover {
+  background: var(--accent-hover);
+}
+
+.header-catalog.is-open .catalog-btn {
+  background: var(--accent-hover);
+}
+
+.catalog-btn-bars {
+  width: 16px;
+  height: 12px;
+  display: inline-grid;
+  gap: 3px;
+}
+
+.catalog-btn-bars i {
+  display: block;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+.header-catalog {
+  position: relative;
+  flex: 0 0 auto;
+  z-index: 200;
+}
+
+.vmenu-overlay {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 210;
+  width: min(1120px, calc(100vw - 32px));
+  display: none;
+  overflow: visible;
+}
+
+.header-catalog.is-open .vmenu-overlay {
+  display: block;
+}
+
+.header-catalog .vmenu-overlay:has(.is-simple-flyout) {
+  width: auto;
+  overflow: visible;
+}
+
+.header-catalog .vmenu {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  width: 100%;
+  overflow: visible;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+}
+
+/* Когда лопата скрыта (каскад) — только колонка категорий */
+.header-catalog .vmenu.is-flat-open {
+  grid-template-columns: 280px !important;
+  width: max-content !important;
+}
+
+.header-catalog .vmenu.is-flat-open > [data-vmenu-flyout],
+.header-catalog .vmenu.is-flat-open > .vmenu-flyout {
+  display: none !important;
+}
+
+.header-catalog .vmenu.is-expanded {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: 100%;
+  min-height: 0;
+  box-shadow: none;
+}
+
+.header-catalog .vmenu:not(:has([data-vmenu-flyout]:not([hidden]))).is-expanded {
+  width: max-content;
+}
+
+.header-catalog .vmenu-flyout {
+  position: static;
+  width: auto;
+  min-height: 420px;
+  border: 0;
+  border-left: 1px solid var(--border);
+  border-radius: 0 8px 8px 0;
+  box-shadow: none;
+}
+
+.header-catalog .vmenu-flyout[hidden] {
+  display: none !important;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.header-catalog .vmenu-flyout:not([hidden]) {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.header-catalog .vmenu-item--extra {
+  display: list-item;
+}
+
+.header-catalog .vmenu.has-more .vmenu-all {
+  display: list-item;
+}
+
+.header-catalog .vmenu.has-more.is-expanded .vmenu-all {
+  display: none;
+}
+
+.home-stage {
+  padding: 20px 0 0;
+  background: var(--page-bg);
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.home-menu {
+  position: relative;
+  z-index: 80;
+  min-width: 0;
+  height: 462px; /* lock space when .vmenu goes absolute on expand */
+  min-height: 462px;
+  overflow: visible;
+}
+
+.vmenu {
+  position: relative;
+  width: 100%;
+  min-height: 462px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: visible;
+}
+
+.vmenu.is-expanded {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  width: 100%;
+  min-height: 462px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
+}
+
+.vmenu-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vmenu-item {
+  position: relative;
+}
+
+.vmenu-item:not(:last-child) {
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.vmenu-item--extra {
+  display: none;
+}
+
+.vmenu.is-expanded .vmenu-item--extra {
+  display: list-item;
+}
+
+.vmenu-all {
+  display: none;
+}
+
+.vmenu.has-more .vmenu-all {
+  display: list-item;
+}
+
+/* When menu is open — all cats are visible, hide the plank */
+.vmenu.has-more.is-expanded .vmenu-all {
+  display: none;
+}
+
+.vmenu-item > a {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 14px;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 14px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.vmenu-ico {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  color: #7a8087;
+  line-height: 1;
+}
+
+.vmenu-ico .icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.vmenu-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vmenu-chev {
+  color: #b0b4b8;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.vmenu-item.is-open > a {
+  background: #8e949b;
+  color: #fff;
+}
+
+.vmenu-item.is-open .vmenu-ico,
+.vmenu-item.is-open .vmenu-chev {
+  color: #fff;
+}
+
+.vmenu-item.is-open > a::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  width: 0;
+  height: 0;
+  margin-top: -6px;
+  border: 6px solid transparent;
+  border-right-color: var(--surface);
+  z-index: 41;
+}
+
+.vmenu-item:hover > a,
+.vmenu-item.is-active > a {
+  background: #f3f4f5;
+  color: var(--text);
+}
+
+.vmenu-item.is-open:hover > a,
+.vmenu-item.is-open.is-active > a {
+  background: #8e949b;
+  color: #fff;
+}
+
+.vmenu-item:hover .vmenu-ico,
+.vmenu-item.is-active .vmenu-ico {
+  background: transparent;
+  color: #5c636a;
+}
+
+.vmenu-item.is-open:hover .vmenu-ico,
+.vmenu-item.is-open .vmenu-ico {
+  color: #fff;
+}
+
+.vmenu-item:hover .vmenu-chev,
+.vmenu-item.is-active .vmenu-chev {
+  color: #8e949b;
+}
+
+.vmenu-item.is-open:hover .vmenu-chev,
+.vmenu-item.is-open .vmenu-chev {
+  color: #fff;
+}
+
+.vmenu-all > a {
+  grid-template-columns: minmax(0, 1fr);
+  color: #8e949b;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.vmenu-all:hover > a {
+  background: transparent;
+  color: #5c636a;
+}
+
+.vmenu-flyout {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(100% - 1px);
+  z-index: 90;
+  width: min(920px, calc(100vw - 320px));
+  min-height: 100%;
+  padding: 18px 20px;
+  overflow: auto;
+  overflow-x: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0 8px 8px 0;
+  box-shadow: 12px 8px 28px rgba(0, 0, 0, 0.08);
+}
+
+.vmenu-flyout.is-simple {
+  top: 0;
+  bottom: auto !important;
+  width: max-content !important;
+  min-width: 220px;
+  max-width: 320px;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 0;
+  overflow: visible;
+  border-radius: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+.vmenu.is-expanded .vmenu-flyout {
+  border-radius: 0 8px 8px 8px;
+}
+
+.vmenu.is-expanded .vmenu-flyout.is-simple {
+  border-radius: 4px;
+}
+
+.vmenu-flyout[hidden] {
+  display: none !important;
+}
+
+/* Пока открыт 1-уровневый каскад — лопату не показываем */
+.vmenu.is-flat-open > .vmenu-flyout {
+  display: none !important;
+}
+
+.vmenu-panel[hidden] {
+  display: none !important;
+}
+
+/* Каскад 1 уровня — планка напротив пункта */
+.vmenu-list > .vmenu-item > .vmenu-cascade {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  border: 1px solid var(--border);
+  box-sizing: border-box;
+}
+
+.vmenu-list > .vmenu-item > .vmenu-cascade[hidden] {
+  display: none !important;
+}
+
+.vmenu-cascade li + li {
+  border-top: 1px solid #ececec;
+}
+
+.vmenu-cascade a {
+  display: block !important;
+  padding: 12px 18px !important;
+  color: #5c636a !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+}
+
+.vmenu-cascade a:hover {
+  background: #ececec !important;
+  color: #111 !important;
+}
+
+.vmenu-simple {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 220px;
+}
+
+.vmenu-simple li + li {
+  border-top: 1px solid #ececec;
+}
+
+.vmenu-simple a {
+  display: block;
+  padding: 12px 18px;
+  color: #5c636a;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
+.vmenu-simple a:hover {
+  background: #ececec;
+  color: #111;
+}
+
+.vmenu-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px 20px;
+}
+
+.vmenu-cols--all {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-content: start;
+}
+
+.vmenu-col h4 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.vmenu-col h4 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.vmenu-col h4 a:hover {
+  text-decoration: underline;
+}
+
+.vmenu-col ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vmenu-col a {
+  display: block;
+  padding: 3px 0;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.vmenu-col a:hover {
+  color: #5c636a;
+  text-decoration: underline;
+}
+
+.vmenu-empty {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.home-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.home-banners {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(210px, 0.7fr);
+  gap: 12px;
+  min-height: 462px;
+  height: 462px;
+}
+
+.home-slider {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--header-bg), color-mix(in srgb, var(--accent) 55%, var(--header-bg)));
+  color: var(--header-text);
+  min-height: 100%;
+  height: 100%;
+}
+
+.home-slider-track {
+  height: 100%;
+}
+
+.home-slide {
+  display: none;
+  height: 100%;
+  min-height: 100%;
+  padding: 28px;
+}
+
+.home-slide.is-active {
+  display: grid;
+  align-items: end;
+}
+
+.home-slide-body small {
+  display: inline-block;
+  margin-bottom: 10px;
+  opacity: 0.85;
+  font-weight: 700;
+}
+
+.home-slide-body h2 {
+  margin: 0 0 8px;
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.home-slide-body p {
+  margin: 0 0 16px;
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.home-slider-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  margin-top: -18px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: #333;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.home-slider-nav.is-prev { left: 10px; }
+.home-slider-nav.is-next { right: 10px; }
+
+.home-side {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 12px;
+  min-height: 100%;
+  height: 100%;
+}
+
+.home-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.home-tile--dark {
+  background: linear-gradient(145deg, #1d1d1d, #3a3a3a);
+  border-color: transparent;
+  color: #fff;
+}
+
+.home-tile strong {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.home-tile span {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.home-tile em {
+  margin-top: 6px;
+  font-style: normal;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.home-tile--dark em {
+  color: var(--accent);
+}
+
+.home-tile-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.header-start {
+  gap: 0;
+}
+
+.header-start .search {
+  flex: 0 0 auto;
+  width: 460px;
+  max-width: 100%;
+  margin-left: 114px;
+}
+
+.home-stage + .benefits-bar {
+  margin-top: 20px;
+}
+
+@media (max-width: 1199px) {
+  .home-grid {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+  .vmenu-cols {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 991px) {
+  .home-grid {
+    grid-template-columns: 1fr;
+  }
+  .home-menu {
+    display: none;
+  }
+  .home-banners {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  .home-side {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: none;
+    min-height: 0;
+  }
+  .home-tile {
+    min-height: 140px;
+  }
+  .vmenu-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 575px) {
+  .catalog-btn span:last-child {
+    display: none;
+  }
+  .header-catalog .vmenu {
+    grid-template-columns: 1fr;
+  }
+  .header-catalog .vmenu-flyout {
+    border-left: 0;
+    border-top: 1px solid var(--border);
+    min-height: 0;
+  }
+  .home-side {
+    grid-template-columns: 1fr;
+  }
+  .home-slide-body h2 {
+    font-size: 26px;
+  }
+}

@@ -1,0 +1,251 @@
+{% set wt_limit = 8 %}
+<style id="wt-filter-theme">
+:root {
+  --wt-accent: {{ accent_color|default('#229ac8') }};
+  --wt-accent-rgb: {{ accent_rgb|default('34, 154, 200') }};
+}
+</style>
+<button type="button" id="wt-filter-fab" class="wt-filter-fab" data-wt-mobile-open aria-controls="wt-filter" aria-expanded="false">
+  <i class="fa-solid fa-sliders"></i>
+  <span>{{ text_filter_short }}</span>
+</button>
+
+<div id="wt-filter" class="wt-filter"
+     style="--wt-accent: {{ accent_color|default('#229ac8') }}; --wt-accent-rgb: {{ accent_rgb|default('34, 154, 200') }};"
+     data-callback="{{ callback }}"
+     data-refresh="{{ refresh }}"
+     data-search-manufacturers="{{ search_manufacturers }}"
+     data-path="{{ path }}"
+     data-manufacturer-id="{{ manufacturer_id|default(0) }}"
+     data-special="{{ special|default(0) }}"
+     data-url-key="{{ url_key }}"
+     data-category-url="{{ category_url }}"
+     data-text-more="{{ text_show_more|e('html_attr') }}"
+     data-text-less="{{ text_show_less|e('html_attr') }}"
+     data-text-brand-empty="{{ text_search_manufacturer_empty|e('html_attr') }}"
+     data-seo-text-position="{{ seo_text_position|default('below') }}"
+     data-show-counts="{{ show_counts|default(true) ? '1' : '0' }}"
+     data-values-limit="{{ wt_limit }}"
+     data-currency="{{ currency_symbol|default('')|e('html_attr') }}">
+  <div class="wt-filter__backdrop" data-wt-mobile-close></div>
+
+  <div class="wt-filter__drawer">
+    <div class="wt-filter__m-header">
+      <button type="button" class="wt-filter__m-icon-btn" data-wt-mobile-close aria-label="{{ text_cancel }}">
+        <i class="fa-solid fa-angle-left"></i>
+      </button>
+      <div class="wt-filter__m-heading">{{ text_filters_title }}</div>
+      <button type="button" class="wt-filter__m-icon-btn" data-wt-mobile-close aria-label="{{ text_cancel }}">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="wt-filter__heading wt-filter__heading--desktop"><i class="fa-solid fa-filter"></i> {{ heading_title }}</div>
+
+    <div class="wt-filter__scroll">
+      {% if popular_filters %}
+      <div class="wt-filter__m-popular">
+        <div class="wt-filter__m-popular-title">{{ text_popular_filters }}</div>
+        <ul class="wt-filter__m-popular-list">
+          {% for item in popular_filters %}
+          <li><a href="{{ item.href }}">{{ item.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <div class="wt-filter__body">
+        <form id="wt-filter-form" onsubmit="return false;">
+          <div class="wt-filter__status wt-filter__status--desktop" data-role="status">{{ text_show_total|format(total) }}</div>
+
+          {% if not options and not manufacturers and not stock and not discount and price.max <= price.min %}
+          <p class="wt-filter__empty">{{ text_empty_filter }}</p>
+          {% endif %}
+
+          {% if price.max > price.min %}
+          <div class="wt-filter__group" data-option="p" data-type="price" data-title="{{ text_price|e('html_attr') }}" data-expanded-desktop="{{ group_expanded.p.desktop }}" data-expanded-mobile="{{ group_expanded.p.mobile }}">
+            <div class="wt-filter__title">{{ text_price }}</div>
+            <div class="wt-filter__price">
+              <input type="number" class="wt-filter__input" data-price="from" value="{{ price.from }}" min="{{ price.min }}" max="{{ price.max }}" step="1">
+              <span class="wt-filter__price-sep">—</span>
+              <input type="number" class="wt-filter__input" data-price="to" value="{{ price.to }}" min="{{ price.min }}" max="{{ price.max }}" step="1">
+            </div>
+            <div class="wt-filter__dual-slider" data-min="{{ price.min }}" data-max="{{ price.max }}">
+              <div class="wt-filter__dual-track">
+                <div class="wt-filter__dual-fill" data-role="fill"></div>
+              </div>
+              <input type="range" class="wt-filter__range wt-filter__range--from" data-price-range="from" min="{{ price.min }}" max="{{ price.max }}" value="{{ price.from }}" step="1">
+              <input type="range" class="wt-filter__range wt-filter__range--to" data-price-range="to" min="{{ price.min }}" max="{{ price.max }}" value="{{ price.to }}" step="1">
+            </div>
+          </div>
+          {% endif %}
+
+          {% if manufacturers %}
+          <div class="wt-filter__group" data-option="m" data-type="checkbox" data-title="{{ text_manufacturer|e('html_attr') }}" data-expanded-desktop="{{ group_expanded.m.desktop }}" data-expanded-mobile="{{ group_expanded.m.mobile }}">
+            <div class="wt-filter__title">{{ text_manufacturer }}</div>
+            <div class="wt-filter__brand-search">
+              <input type="search" class="wt-filter__brand-input" data-role="brand-search" autocomplete="off" placeholder="{{ text_search_manufacturer|e('html_attr') }}">
+              <div class="wt-filter__suggest" data-role="brand-suggest" hidden></div>
+            </div>
+            <div class="wt-filter__values">
+              {% for value in manufacturers %}
+              <label class="wt-filter__value{% if value.disabled %} is-disabled{% endif %}{% if value.selected %} is-selected{% endif %}{% if loop.index > wt_limit and not value.selected %} is-collapsed{% endif %}">
+                <input type="checkbox" data-value-id="m{{ value.value_id }}" value="{{ value.value_id }}"{% if value.selected %} checked{% endif %}{% if value.disabled %} disabled{% endif %}>
+                <span class="wt-filter__name">{{ value.name }}</span>
+                {% if show_counts %}<span class="wt-filter__count" data-count-key="m{{ value.value_id }}">{{ value.count }}</span>{% endif %}
+              </label>
+              {% endfor %}
+            </div>
+            {% if manufacturers|length > wt_limit %}
+            <button type="button" class="wt-filter__more" aria-expanded="false">{{ text_show_more|format(manufacturers|length - wt_limit) }} <i class="fa-solid fa-angle-down"></i></button>
+            {% endif %}
+          </div>
+          {% endif %}
+
+          {% if stock %}
+          <div class="wt-filter__group" data-option="s" data-type="checkbox" data-title="{{ text_stock|e('html_attr') }}" data-expanded-desktop="{{ group_expanded.s.desktop }}" data-expanded-mobile="{{ group_expanded.s.mobile }}">
+            <div class="wt-filter__title">{{ text_stock }}</div>
+            <div class="wt-filter__values">
+              {% for value in stock %}
+              <label class="wt-filter__value{% if value.disabled %} is-disabled{% endif %}{% if value.selected %} is-selected{% endif %}">
+                <input type="checkbox" data-value-id="s{{ value.value_id }}" value="{{ value.value_id }}"{% if value.selected %} checked{% endif %}{% if value.disabled %} disabled{% endif %}>
+                <span class="wt-filter__name">{{ value.name }}</span>
+                {% if show_counts %}<span class="wt-filter__count" data-count-key="s{{ value.value_id }}">{{ value.count }}</span>{% endif %}
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          {% if discount %}
+          <div class="wt-filter__group" data-option="d" data-type="checkbox" data-title="{{ text_discount|e('html_attr') }}" data-expanded-desktop="{{ group_expanded.d.desktop }}" data-expanded-mobile="{{ group_expanded.d.mobile }}">
+            <div class="wt-filter__title">{{ text_discount }}</div>
+            <div class="wt-filter__values">
+              {% for value in discount %}
+              <label class="wt-filter__value{% if value.disabled %} is-disabled{% endif %}{% if value.selected %} is-selected{% endif %}">
+                <input type="checkbox" data-value-id="d{{ value.value_id }}" value="{{ value.value_id }}"{% if value.selected %} checked{% endif %}{% if value.disabled %} disabled{% endif %}>
+                <span class="wt-filter__name">{{ value.name }}</span>
+                {% if show_counts %}<span class="wt-filter__count" data-count-key="d{{ value.value_id }}">{{ value.count }}</span>{% endif %}
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          {% for option in options %}
+          <div class="wt-filter__group" data-option="{{ option.option_id }}" data-type="{{ option.type }}" data-title="{{ option.name|e('html_attr') }}" data-expanded-desktop="{{ option.expanded_desktop|default(1) }}" data-expanded-mobile="{{ option.expanded_mobile|default(0) }}">
+            <div class="wt-filter__title">{{ option.name }}</div>
+
+            {% if option.type == 'slider_range' or option.type == 'slide_dual' %}
+              {% if option.max > option.min %}
+              <div class="wt-filter__price">
+                <input type="number" class="wt-filter__input" data-slide="from" value="{{ option.from }}" min="{{ option.min }}" max="{{ option.max }}" step="{{ option.step|default(1) }}">
+                <span class="wt-filter__price-sep">—</span>
+                <input type="number" class="wt-filter__input" data-slide="to" value="{{ option.to }}" min="{{ option.min }}" max="{{ option.max }}" step="{{ option.step|default(1) }}">
+              </div>
+              <div class="wt-filter__dual-slider" data-min="{{ option.min }}" data-max="{{ option.max }}" data-step="{{ option.step|default(1) }}" data-scale="{{ option.scale|default(0) }}">
+                <div class="wt-filter__dual-track">
+                  <div class="wt-filter__dual-fill" data-role="fill"></div>
+                </div>
+                <input type="range" class="wt-filter__range wt-filter__range--from" data-slide-range="from" min="{{ option.min }}" max="{{ option.max }}" value="{{ option.from }}" step="{{ option.step|default(1) }}">
+                <input type="range" class="wt-filter__range wt-filter__range--to" data-slide-range="to" min="{{ option.min }}" max="{{ option.max }}" value="{{ option.to }}" step="{{ option.step|default(1) }}">
+              </div>
+              {% endif %}
+
+            {% elseif option.type == 'slider_single' or option.type == 'slide' %}
+              {% if option.max > option.min %}
+              <div class="wt-filter__price">
+                <input type="number" class="wt-filter__input" data-slide="to" value="{{ option.to }}" min="{{ option.min }}" max="{{ option.max }}" step="{{ option.step|default(1) }}">
+              </div>
+              <div class="wt-filter__single-slider" data-min="{{ option.min }}" data-max="{{ option.max }}" data-step="{{ option.step|default(1) }}" data-scale="{{ option.scale|default(0) }}">
+                <input type="range" class="wt-filter__range wt-filter__range--single" data-slide-range="to" min="{{ option.min }}" max="{{ option.max }}" value="{{ option.to }}" step="{{ option.step|default(1) }}">
+              </div>
+              {% endif %}
+
+            {% elseif option.type == 'select' %}
+              <select class="wt-filter__select" data-select="1">
+                <option value="">{{ text_all }}</option>
+                {% for value in option.values %}
+                <option value="{{ value.value_id }}" data-value-id="{{ option.option_id }}{{ value.value_id }}"{% if show_counts %} data-count-key="{{ option.option_id }}{{ value.value_id }}"{% endif %}{% if value.selected %} selected{% endif %}{% if value.disabled %} disabled{% endif %}>{{ value.name }}{% if show_counts %} ({{ value.count }}){% endif %}</option>
+                {% endfor %}
+              </select>
+
+            {% elseif option.type == 'checkbox_image' or option.type == 'radio_image' or option.type == 'image_checkbox' or option.type == 'image_radio' %}
+              <div class="wt-filter__values">
+                {% for value in option.values %}
+                <label class="wt-filter__value wt-filter__value--color{% if value.disabled %} is-disabled{% endif %}{% if value.selected %} is-selected{% endif %}{% if loop.index > wt_limit and not value.selected %} is-collapsed{% endif %}" title="{{ value.name }}">
+                  {% if option.type == 'radio_image' or option.type == 'image_radio' %}
+                  <input type="radio" name="wt_opt_{{ option.option_id }}" data-value-id="{{ option.option_id }}{{ value.value_id }}" value="{{ value.value_id }}"{% if value.selected %} checked{% endif %}{% if value.disabled %} disabled{% endif %}>
+                  {% else %}
+                  <input type="checkbox" data-value-id="{{ option.option_id }}{{ value.value_id }}" value="{{ value.value_id }}"{% if value.selected %} checked{% endif %}{% if value.disabled %} disabled{% endif %}>
+                  {% endif %}
+                  {% if value.color %}
+                  <span class="wt-filter__swatch" style="background:{{ value.color }}"></span>
+                  {% elseif value.thumb %}
+                  <span class="wt-filter__swatch wt-filter__swatch--img"><img src="{{ value.thumb }}" alt="" loading="lazy" width="20" height="20"></span>
+                  {% else %}
+                  <span class="wt-filter__swatch wt-filter__swatch--empty"></span>
+                  {% endif %}
+                  <span class="wt-filter__name">{{ value.name }}</span>
+                  {% if show_counts %}<span class="wt-filter__count" data-count-key="{{ option.option_id }}{{ value.value_id }}">{{ value.count }}</span>{% endif %}
+                </label>
+                {% endfor %}
+              </div>
+              {% if option.values|length > wt_limit %}
+              <button type="button" class="wt-filter__more" aria-expanded="false">{{ text_show_more|format(option.values|length - wt_limit) }} <i class="fa-solid fa-angle-down"></i></button>
+              {% endif %}
+
+            {% elseif option.type == 'radio' %}
+              <div class="wt-filter__values">
+                {% for value in option.values %}
+                <label class="wt-filter__value{% if value.disabled %} is-disabled{% endif %}{% if value.selected %} is-selected{% endif %}{% if loop.index > wt_limit and not value.selected %} is-collapsed{% endif %}">
+                  <input type="radio" name="wt_opt_{{ option.option_id }}" data-value-id="{{ option.option_id }}{{ value.value_id }}" value="{{ value.value_id }}"{% if value.selected %} checked{% endif %}{% if value.disabled %} disabled{% endif %}>
+                  {% if value.color %}
+                  <span class="wt-filter__swatch" style="background:{{ value.color }}"></span>
+                  {% elseif value.thumb %}
+                  <span class="wt-filter__swatch wt-filter__swatch--img"><img src="{{ value.thumb }}" alt="" loading="lazy" width="20" height="20"></span>
+                  {% endif %}
+                  <span class="wt-filter__name">{{ value.name }}</span>
+                  {% if show_counts %}<span class="wt-filter__count" data-count-key="{{ option.option_id }}{{ value.value_id }}">{{ value.count }}</span>{% endif %}
+                </label>
+                {% endfor %}
+              </div>
+              {% if option.values|length > wt_limit %}
+              <button type="button" class="wt-filter__more" aria-expanded="false">{{ text_show_more|format(option.values|length - wt_limit) }} <i class="fa-solid fa-angle-down"></i></button>
+              {% endif %}
+
+            {% else %}
+              <div class="wt-filter__values">
+                {% for value in option.values %}
+                <label class="wt-filter__value{% if value.disabled %} is-disabled{% endif %}{% if value.selected %} is-selected{% endif %}{% if loop.index > wt_limit and not value.selected %} is-collapsed{% endif %}">
+                  <input type="checkbox" data-value-id="{{ option.option_id }}{{ value.value_id }}" value="{{ value.value_id }}"{% if value.selected %} checked{% endif %}{% if value.disabled %} disabled{% endif %}>
+                  {% if value.color %}
+                  <span class="wt-filter__swatch" style="background:{{ value.color }}"></span>
+                  {% elseif value.thumb %}
+                  <span class="wt-filter__swatch wt-filter__swatch--img"><img src="{{ value.thumb }}" alt="" loading="lazy" width="20" height="20"></span>
+                  {% endif %}
+                  <span class="wt-filter__name">{{ value.name }}</span>
+                  {% if show_counts %}<span class="wt-filter__count" data-count-key="{{ option.option_id }}{{ value.value_id }}">{{ value.count }}</span>{% endif %}
+                </label>
+                {% endfor %}
+              </div>
+              {% if option.values|length > wt_limit %}
+              <button type="button" class="wt-filter__more" aria-expanded="false">{{ text_show_more|format(option.values|length - wt_limit) }} <i class="fa-solid fa-angle-down"></i></button>
+              {% endif %}
+            {% endif %}
+          </div>
+          {% endfor %}
+
+          <div class="wt-filter__actions wt-filter__actions--desktop">
+            <button type="button" class="wt-filter__reset" data-action="reset">{{ text_reset }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="wt-filter__m-footer" data-role="mobile-footer">
+      <button type="button" class="wt-filter__m-reset" data-action="reset">{{ text_reset }}</button>
+      <button type="button" class="wt-filter__m-apply" data-wt-mobile-apply>{{ text_apply_filter }}</button>
+    </div>
+  </div>
+</div>

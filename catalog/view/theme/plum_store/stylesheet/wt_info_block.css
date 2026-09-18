@@ -1,0 +1,96 @@
+/* WT Info Block — accordion for plum_store */
+.wt-info-block {
+  margin: 24px 0;
+}
+
+.wt-info-block__heading {
+  margin: 0 0 16px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text, #2a1526);
+}
+
+.wt-info-block__list {
+  border: 1px solid var(--border, #e5d6df);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface, #fff);
+}
+
+.wt-info-block__item + .wt-info-block__item {
+  border-top: 1px solid var(--border, #e5d6df);
+}
+
+.wt-info-block__toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text, #2a1526);
+  font: inherit;
+  font-weight: 600;
+}
+
+.wt-info-block__toggle:hover {
+  background: rgba(184, 90, 130, 0.06);
+}
+
+.wt-info-block__item.is-open .wt-info-block__toggle {
+  background: rgba(184, 90, 130, 0.08);
+  color: var(--accent, #b85a82);
+}
+
+.wt-info-block__icon {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+  flex: 0 0 auto;
+}
+
+.wt-info-block__item.is-open .wt-info-block__icon {
+  transform: rotate(-135deg);
+}
+
+.wt-info-block__panel {
+  padding: 0 18px 16px;
+}
+
+.wt-info-block__body {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.wt-info-block__media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.wt-info-block__text {
+  color: var(--text-muted, #6e5568);
+  line-height: 1.55;
+  font-size: 0.98rem;
+}
+
+@media (max-width: 680px) {
+  .wt-info-block__body {
+    grid-template-columns: 1fr;
+  }
+
+  .wt-info-block__media {
+    max-width: 220px;
+  }
+}

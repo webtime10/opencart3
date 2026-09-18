@@ -1,0 +1,14 @@
+/* Bootstrap 3.4.1 — desktop container only (rest = stock BS3) */
+/* Default lg=1170 → 1260; extra wide → 1380 */
+
+@media (min-width: 1200px) {
+  .container {
+    width: 1260px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .container {
+    width: 1380px;
+  }
+}
