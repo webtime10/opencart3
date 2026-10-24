@@ -3,12 +3,34 @@ class ControllerExtensionThemePlumStore extends Controller {
 	private $error = array();
 
 	/**
-	 * При Install темы: пункт «Настройки темы» в боковом меню админки.
+	 * При Install темы: меню + header + галка «в шапке» на статьях.
 	 */
 	public function install() {
+		$this->registerPlumEvents();
+		$this->load->model('extension/theme/plum_store');
+		$this->model_extension_theme_plum_store->ensureSchema();
+
+		$this->load->model('user/user_group');
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'extension/theme/plum_store');
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'extension/theme/plum_store');
+	}
+
+	public function uninstall() {
 		$this->load->model('setting/event');
 		$this->model_setting_event->deleteEventByCode('plum_store_menu');
 		$this->model_setting_event->deleteEventByCode('plum_store_header');
+		$this->model_setting_event->deleteEventByCode('plum_store_info');
+	}
+
+	/**
+	 * Регистрация Event’ов (install + при сохранении настроек темы).
+	 */
+	private function registerPlumEvents() {
+		$this->load->model('setting/event');
+		$this->model_setting_event->deleteEventByCode('plum_store_menu');
+		$this->model_setting_event->deleteEventByCode('plum_store_header');
+		$this->model_setting_event->deleteEventByCode('plum_store_info');
+
 		$this->model_setting_event->addEvent(
 			'plum_store_menu',
 			'admin/view/common/column_left/before',
@@ -23,16 +45,34 @@ class ControllerExtensionThemePlumStore extends Controller {
 			1,
 			0
 		);
-
-		$this->load->model('user/user_group');
-		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'extension/theme/plum_store');
-		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'extension/theme/plum_store');
-	}
-
-	public function uninstall() {
-		$this->load->model('setting/event');
-		$this->model_setting_event->deleteEventByCode('plum_store_menu');
-		$this->model_setting_event->deleteEventByCode('plum_store_header');
+		$this->model_setting_event->addEvent(
+			'plum_store_info',
+			'admin/view/catalog/information_form/after',
+			'extension/theme/plum_store/eventInformationForm',
+			1,
+			0
+		);
+		$this->model_setting_event->addEvent(
+			'plum_store_info',
+			'admin/model/catalog/information/addInformation/after',
+			'extension/theme/plum_store/eventInformationAdd',
+			1,
+			0
+		);
+		$this->model_setting_event->addEvent(
+			'plum_store_info',
+			'admin/model/catalog/information/editInformation/after',
+			'extension/theme/plum_store/eventInformationEdit',
+			1,
+			0
+		);
+		$this->model_setting_event->addEvent(
+			'plum_store_info',
+			'admin/model/catalog/information/deleteInformation/after',
+			'extension/theme/plum_store/eventInformationDelete',
+			1,
+			0
+		);
 	}
 
 	/**
@@ -68,6 +108,66 @@ class ControllerExtensionThemePlumStore extends Controller {
 		array_splice($data['menus'], 1, 0, array($item));
 	}
 
+	/**
+	 * Галка «Показывать в шапке» на форме информационной статьи.
+	 */
+	public function eventInformationForm(&$route, &$data, &$output) {
+		if (!is_string($output) || strpos($output, 'name="plum_top"') !== false) {
+			return;
+		}
+
+		$this->load->model('extension/theme/plum_store');
+		$this->model_extension_theme_plum_store->ensureSchema();
+		$this->load->language('extension/theme/plum_store');
+
+		$information_id = isset($this->request->get['information_id']) ? (int)$this->request->get['information_id'] : 0;
+		$flags = $this->model_extension_theme_plum_store->getFlags($information_id);
+		$checked = $flags['top'] ? ' checked="checked"' : '';
+
+		$html = '<div class="form-group">'
+			. '<label class="col-sm-2 control-label" for="input-plum-top"><span data-toggle="tooltip" title="' . htmlspecialchars($this->language->get('help_top'), ENT_QUOTES, 'UTF-8') . '">' . $this->language->get('entry_top') . '</span></label>'
+			. '<div class="col-sm-10"><div class="checkbox"><label>'
+			. '<input type="checkbox" name="plum_top" value="1" id="input-plum-top"' . $checked . ' />'
+			. '&nbsp;</label></div></div></div>';
+
+		$needle = 'id="input-status"';
+		$pos = strpos($output, $needle);
+
+		if ($pos === false) {
+			return;
+		}
+
+		$start = strrpos(substr($output, 0, $pos), '<div class="form-group">');
+
+		if ($start === false) {
+			return;
+		}
+
+		$output = substr($output, 0, $start) . $html . substr($output, $start);
+	}
+
+	public function eventInformationAdd(&$route, &$args, &$output) {
+		$information_id = (int)$output;
+		$top = !empty($this->request->post['plum_top']) ? 1 : 0;
+		$this->load->model('extension/theme/plum_store');
+		$this->model_extension_theme_plum_store->ensureSchema();
+		$this->model_extension_theme_plum_store->setFlags($information_id, $top);
+	}
+
+	public function eventInformationEdit(&$route, &$args, &$output) {
+		$information_id = isset($args[0]) ? (int)$args[0] : 0;
+		$top = !empty($this->request->post['plum_top']) ? 1 : 0;
+		$this->load->model('extension/theme/plum_store');
+		$this->model_extension_theme_plum_store->ensureSchema();
+		$this->model_extension_theme_plum_store->setFlags($information_id, $top);
+	}
+
+	public function eventInformationDelete(&$route, &$args, &$output) {
+		$information_id = isset($args[0]) ? (int)$args[0] : 0;
+		$this->load->model('extension/theme/plum_store');
+		$this->model_extension_theme_plum_store->delete($information_id);
+	}
+
 	public function index() {
 		$this->load->language('extension/theme/plum_store');
 
@@ -76,7 +176,13 @@ class ControllerExtensionThemePlumStore extends Controller {
 		$this->load->model('setting/setting');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+			$layout = isset($this->request->post['theme_plum_store_header_layout']) ? (string)$this->request->post['theme_plum_store_header_layout'] : '1';
+			$this->request->post['theme_plum_store_header_layout'] = in_array($layout, array('1', '2'), true) ? $layout : '1';
+
 			$this->model_setting_setting->editSetting('theme_plum_store', $this->request->post, $this->request->get['store_id']);
+			$this->registerPlumEvents();
+			$this->load->model('extension/theme/plum_store');
+			$this->model_extension_theme_plum_store->ensureSchema();
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -226,6 +332,31 @@ class ControllerExtensionThemePlumStore extends Controller {
 			$data['theme_plum_store_color_scheme'] = 'theme-plum';
 		}
 
+		if (isset($this->request->post['theme_plum_store_header_layout'])) {
+			$data['theme_plum_store_header_layout'] = $this->request->post['theme_plum_store_header_layout'];
+		} elseif (isset($setting_info['theme_plum_store_header_layout'])) {
+			$data['theme_plum_store_header_layout'] = $setting_info['theme_plum_store_header_layout'];
+		} else {
+			$data['theme_plum_store_header_layout'] = '1';
+		}
+
+		if (!in_array((string)$data['theme_plum_store_header_layout'], array('1', '2'), true)) {
+			$data['theme_plum_store_header_layout'] = '1';
+		}
+
+		$data['header_layouts'] = array(
+			array(
+				'value'   => '1',
+				'label'   => $this->language->get('text_header_1'),
+				'preview' => HTTP_CATALOG . 'catalog/view/theme/plum_store/image/header-1.svg'
+			),
+			array(
+				'value'   => '2',
+				'label'   => $this->language->get('text_header_2'),
+				'preview' => HTTP_CATALOG . 'catalog/view/theme/plum_store/image/header-2.svg'
+			)
+		);
+
 		$data['color_schemes'] = array(
 			array(
 				'value'  => 'theme-dark',
@@ -281,13 +412,13 @@ class ControllerExtensionThemePlumStore extends Controller {
 			if ($ext === 'svg') {
 				$data['logo_thumb'] = HTTP_CATALOG . 'image/' . $data['theme_plum_store_logo'];
 			} else {
-				$data['logo_thumb'] = $this->model_tool_image->resize($data['theme_plum_store_logo'], 150, 50);
+				$data['logo_thumb'] = $this->model_tool_image->resize($data['theme_plum_store_logo'], 100, 100);
 			}
 		} else {
-			$data['logo_thumb'] = $this->model_tool_image->resize('no_image.png', 150, 50);
+			$data['logo_thumb'] = $this->model_tool_image->resize('no_image.png', 100, 100);
 		}
 
-		$data['placeholder'] = $this->model_tool_image->resize('no_image.png', 150, 50);
+		$data['placeholder'] = $this->model_tool_image->resize('no_image.png', 100, 100);
 		
 		if (isset($this->request->post['theme_plum_store_product_description_length'])) {
 			$data['theme_plum_store_product_description_length'] = $this->request->post['theme_plum_store_product_description_length'];

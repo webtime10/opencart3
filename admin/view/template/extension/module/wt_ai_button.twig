@@ -1,0 +1,39 @@
+<button type="button" id="button-wt-ai" class="btn btn-info" style="margin-right:5px;" data-entity="{{ entity }}" data-id="{{ entity_id }}" data-action="{{ action }}" title="{{ button_run }}"><i class="fa fa-language"></i> {{ button_run }}</button>
+<script type="text/javascript"><!--
+(function () {
+  var $btn = $('#button-wt-ai');
+  if (!$btn.length || $btn.data('wt-bound')) return;
+  $btn.data('wt-bound', 1);
+  $btn.on('click', function () {
+    var id = parseInt($btn.data('id'), 10) || 0;
+    if (id <= 0) {
+      alert({{ text_need_save|json_encode|raw }});
+      return;
+    }
+    if ($btn.prop('disabled')) return;
+    $btn.prop('disabled', true);
+    var oldHtml = $btn.html();
+    $btn.html('<i class="fa fa-spinner fa-spin"></i> ' + {{ text_running|json_encode|raw }});
+    $.ajax({
+      url: $btn.data('action'),
+      type: 'post',
+      dataType: 'json',
+      data: { entity: $btn.data('entity'), entity_id: id },
+      success: function (json) {
+        if (json && json.ok) {
+          alert({{ text_done|json_encode|raw }} + '\n' + (json.message || ''));
+          location.reload();
+        } else {
+          alert((json && json.message) ? json.message : 'Error');
+        }
+      },
+      error: function (xhr) {
+        alert(xhr.responseText || 'Request failed');
+      },
+      complete: function () {
+        $btn.prop('disabled', false).html(oldHtml);
+      }
+    });
+  });
+})();
+//--></script>

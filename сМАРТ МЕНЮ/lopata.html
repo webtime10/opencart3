@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Мега-меню 800px</title>
+ <!-- МЕГА-МЕНЮ С ПРАВИЛЬНОЙ ВЛОЖЕННОСТЬЮ -->
+<style>
+  :root{
+    --bg:#fff; --text:#2b2b2b; --muted:#8a8a8a;
+    --accent:#c0392b; --border:#e9e9e9; --shadow:0 10px 30px rgba(0,0,0,.08);
+  }
+  *{ box-sizing:border-box; }
+
+  .nav-wrap{
+    position:relative;               /* якорь для панелей */
+    width:800px; margin:24px auto;
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    background:#fff;
+  }
+
+  /* Верхний список: внутри только LI/A */
+  .smenu{ position:relative; display:flex; gap:4px; list-style:none; margin:0; padding:0; }
+  .smenu>li{ position:static; }
+  .smenu>li>a{
+    display:block; padding:12px 20px; text-decoration:none; color:var(--text);
+    text-transform:uppercase; letter-spacing:.02em; font-weight:600;
+  }
+  .smenu>li>a:hover, .smenu>li:focus-within>a, .smenu>li[aria-expanded="true"]>a{ background:#fafafa; }
+  .caret2{ margin-left:6px; font-size:11px; color:var(--muted); }
+
+  /* Слой для панелей идёт сразу после UL */
+  .mega-layer{ position:relative; }
+
+  /* Панели (вне UL) */
+  .mega{
+    position:absolute; left:0; top:0;          /* top:0 — потому что .mega-layer стоит сразу под UL */
+    width:auto; padding:18px 22px;
+    background:#fff; border:1px solid var(--border); box-shadow:var(--shadow);
+    display:none; z-index:20;
+  }
+
+  /* Сетка по модификаторам grid-1..grid-12 */
+  .mega-grid{ display:grid; gap:32px; min-width:auto; }
+  .mega-grid.grid-1  { grid-template-columns: repeat(1,  1fr); }
+  .mega-grid.grid-2  { grid-template-columns: repeat(2,  1fr); }
+  .mega-grid.grid-3  { grid-template-columns: repeat(3,  1fr); }
+  .mega-grid.grid-4  { grid-template-columns: repeat(4,  1fr); }
+  .mega-grid.grid-5  { grid-template-columns: repeat(5,  1fr); }
+  .mega-grid.grid-6  { grid-template-columns: repeat(6,  1fr); }
+  .mega-grid.grid-7  { grid-template-columns: repeat(7,  1fr); }
+  .mega-grid.grid-8  { grid-template-columns: repeat(8,  1fr); }
+  .mega-grid.grid-9  { grid-template-columns: repeat(9,  1fr); }
+  .mega-grid.grid-10 { grid-template-columns: repeat(10, 1fr); }
+  .mega-grid.grid-11 { grid-template-columns: repeat(11, 1fr); }
+  .mega-grid.grid-12 { grid-template-columns: repeat(12, 1fr); }
+
+  /* Типографика */
+  .mega h4{ margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:#7a3a2d; }
+  .mega ul{ list-style:none; margin:0; padding:0; }
+  .mega li+li{ margin-top:8px; }
+  .mega a{ text-decoration:none; color:var(--text); }
+  .mega a:hover{ color:var(--accent); }
+</style>
+</head>
+<body>
+<nav class="nav-wrap" aria-label="Главное меню">
+  <!-- Внутри UL — только LI/A -->
+  <ul class="smenu" role="menubar">
+    <li role="none"><a role="menuitem" href="#">Home</a></li>
+
+    <li role="none" data-panel="men"><a role="menuitem" href="#">Men <span class="caret2">▾</span></a></li>
+    <li role="none" data-panel="women"><a role="menuitem" href="#">Women <span class="caret2">▾</span></a></li>
+    <li role="none" data-panel="kids"><a role="menuitem" href="#">Kids <span class="caret2">▾</span></a></li>
+
+    <li role="none"><a role="menuitem" href="#">Typo</a></li>
+    <li role="none"><a role="menuitem" href="#">Contact</a></li>
+  </ul>
+
+  <!-- Панели вынесены ИЗ списка -->
+  <div class="mega-layer">
+    <div class="mega" id="panel-men" role="region" aria-label="Меню: Men">
+      <div class="mega-grid">
+        <section>
+          <h4><a href="#">New In</a></h4>
+          <ul>
+            <li><a href="#">New In Clothing</a></li>
+            <li><a href="#">New In Bags</a></li>
+            <li><a href="#">New In Shoes</a></li>
+            <li><a href="#">New In Watches</a></li>
+            <li><a href="#">New In Grooming</a></li>
+            
+            
+          </ul>
+        </section>
+        <section>
+          <h4><a href="#">Clothing</a></h4>
+          <ul>
+            <li><a href="#">Polos &amp; Tees</a></li>
+            <li><a href="#">Casual Shirts</a></li>
+            <li><a href="#">Casual Trousers</a></li>
+            <li><a href="#">Jeans</a></li>
+            <li><a href="#">Shorts &amp; 3/4th</a></li>
+            <li><a href="#">Formal Shirts</a></li>
+            <li><a href="#">Formal Trousers</a></li>
+            <li><a href="#">Suits &amp; Blazers</a></li>
+            <li><a href="#">Track Wear</a></li>
+            <li><a href="#">Inner Wear</a></li>
+          </ul>
+        </section>
+        <section>
+          <h4><a href="#">Watches</a></h4>
+          <ul>
+            <li><a href="#">Analog</a></li>
+            <li><a href="#">Chronograph</a></li>
+            <li><a href="#">Digital</a></li>
+            <li><a href="#">Watch Cases</a></li>
+          </ul>
+        </section>
+	
+      </div>
+    </div>
+
+    <div class="mega" id="panel-women" role="region" aria-label="Меню: Women">
+      <div class="mega-grid">
+        <section>
+          <h4><a href="#">New In</a></h4>
+          <ul>
+            <li><a href="#">Dresses</a></li>
+            <li><a href="#">Bags</a></li>
+            <li><a href="#">Shoes</a></li>
+            <li><a href="#">Accessories</a></li>
+          </ul>
+        </section>
+        <section>
+          <h4><a href="#">Clothing</a></h4>
+          <ul>
+            <li><a href="#">Tops &amp; Tees</a></li>
+            <li><a href="#">Skirts</a></li>
+            <li><a href="#">Jeans</a></li>
+            <li><a href="#">Jackets</a></li>
+          </ul>
+        </section>
+        <section>
+          <h4><a href="#">Watches</a></h4>
+          <ul>
+            <li><a href="#">Analog</a></li>
+            <li><a href="#">Digital</a></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+
+    <div class="mega" id="panel-kids" role="region" aria-label="Меню: Kids">
+      <div class="mega-grid">
+        <section>
+          <h4><a href="#">Boys</a></h4>
+          <ul>
+            <li><a href="#">T-Shirts</a></li>
+            <li><a href="#">Shorts</a></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  /* ===== 1) Сетка: grid-1..grid-12 по числу <section> ===== */
+  function applyGridClass(grid){
+    const count = grid.querySelectorAll(':scope > section').length;
+    const cols  = Math.max(1, Math.min(12, count));
+    grid.classList.remove(...Array.from({length:12}, (_,i)=>`grid-${i+1}`));
+    grid.classList.add(`grid-${cols}`);
+  }
+  document.querySelectorAll('.mega-grid').forEach(applyGridClass);
+
+  /* ===== 2) Показ нужной панели и позиционирование ===== */
+  (function(){
+    const nav   = document.querySelector('.nav-wrap');
+    const menu  = nav.querySelector('.smenu');
+    const layer = nav.querySelector('.mega-layer');
+
+    const panels = {
+      men  : document.getElementById('panel-men'),
+      women: document.getElementById('panel-women'),
+      kids : document.getElementById('panel-kids'),
+    };
+
+    function hideAll(){ Object.values(panels).forEach(p=> p.style.display='none'); }
+
+    function positionPanel(li, panel){
+      // сетка на случай динамики
+      const grid = panel.querySelector('.mega-grid');
+      if (grid) applyGridClass(grid);
+
+      const menuRect = menu.getBoundingClientRect();
+      const liRect   = li.getBoundingClientRect();
+
+      const left = liRect.left - menuRect.left;
+      panel.style.left = left + 'px';
+
+      const available = menuRect.width - left;
+      panel.style.width = 'auto';
+      panel.style.maxWidth = 'none';
+
+      // показать, чтобы корректно посчитать контент
+      panel.style.display = 'block';
+      const w = panel.scrollWidth;
+      if (w > available) panel.style.maxWidth = available + 'px';
+    }
+
+    // Открытие по hover/focus на пунктах с data-panel
+    menu.querySelectorAll(':scope > li[data-panel]').forEach(li=>{
+      const id = li.getAttribute('data-panel');
+      const panel = panels[id];
+      if (!panel) return;
+
+      li.addEventListener('mouseenter', ()=>{ hideAll(); positionPanel(li, panel); });
+      li.addEventListener('focusin',    ()=>{ hideAll(); positionPanel(li, panel); });
+    });
+
+    // Скрывать, когда уходим мышкой из всего nav
+    nav.addEventListener('mouseleave', hideAll);
+
+    // Перепозиционировать открытую при ресайзе
+    window.addEventListener('resize', ()=>{
+      const openId = Object.entries(panels).find(([,p])=> p.style.display==='block')?.[0];
+      if (!openId) return;
+      const li = menu.querySelector(`:scope > li[data-panel="${openId}"]`);
+      positionPanel(li, panels[openId]);
+    });
+  })();
+</script>
+
+</body>
+</html>

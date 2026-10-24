@@ -1,0 +1,56 @@
+<div class="slider-container wt-big-banner">
+  <div class="swiper wt-swiper" id="wt-big-{{ module }}">
+    <div class="swiper-wrapper">
+      {% for item in items %}
+      <div class="swiper-slide">
+        {% if item.image %}
+        <a class="wt-slide-img-link" href="{{ item.href }}">
+          <img class="wt-slide-img" src="{{ item.image }}" alt="{{ item.title }}" width="300" height="300" loading="{{ loop.first ? 'eager' : 'lazy' }}">
+        </a>
+        {% endif %}
+        <div class="home-slide-body">
+          {% if item.percent %}<small>{{ item.percent }}</small>{% endif %}
+          {% if item.title %}<h2>{{ item.title }}</h2>{% endif %}
+          {% if item.description %}<p>{{ item.description }}</p>{% endif %}
+          <a class="btn btn-primary btn-sm" href="{{ item.href }}">{{ text_more }}</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% if items|length > 1 %}
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+    {% endif %}
+  </div>
+</div>
+<script>
+(function () {
+  var tries = 0;
+  function initWtBig{{ module }}() {
+    if (typeof Swiper === 'undefined') {
+      if (++tries < 80) setTimeout(initWtBig{{ module }}, 50);
+      return;
+    }
+    var el = document.getElementById('wt-big-{{ module }}');
+    if (!el || el.swiper) return;
+    var multi = {{ items|length > 1 ? 'true' : 'false' }};
+    new Swiper(el, {
+      rewind: multi,
+      speed: 600,
+      {% if autoplay %}
+      autoplay: { delay: {{ autoplay }}, disableOnInteraction: false },
+      {% endif %}
+      navigation: multi ? {
+        nextEl: el.querySelector('.swiper-button-next'),
+        prevEl: el.querySelector('.swiper-button-prev')
+      } : undefined
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initWtBig{{ module }});
+  } else {
+    initWtBig{{ module }}();
+  }
+  window.addEventListener('load', initWtBig{{ module }});
+})();
+</script>

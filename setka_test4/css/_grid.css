@@ -1,0 +1,29 @@
+/* Theme product/benefits grids (no wt_ prefix) */
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (min-width: 768px) { .products { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 992px) { .products { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1200px) { .products { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1400px) { .products { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+
+.products-catalog { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 768px) { .products-catalog { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 992px) { .products-catalog { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1200px) { .products-catalog { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1400px) { .products-catalog { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+.benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+@media (max-width: 991px) {
+  .benefits { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 575px) {
+  .products, .products-catalog { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+}

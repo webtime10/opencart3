@@ -1,0 +1,105 @@
+/* Theme product/benefits — flex (no CSS Grid) */
+
+.products {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.products > * {
+  flex: 0 0 calc(50% - 7px);
+  max-width: calc(50% - 7px);
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+@media (min-width: 992px) {
+  .products > * {
+    flex-basis: calc(33.333% - 9.34px);
+    max-width: calc(33.333% - 9.34px);
+  }
+}
+
+@media (min-width: 1200px) {
+  .products > * {
+    flex-basis: calc(25% - 10.5px);
+    max-width: calc(25% - 10.5px);
+  }
+}
+
+@media (min-width: 1400px) {
+  .products > * {
+    flex-basis: calc(20% - 11.2px);
+    max-width: calc(20% - 11.2px);
+  }
+}
+
+.products-catalog > * {
+  flex-basis: calc(50% - 7px);
+  max-width: calc(50% - 7px);
+}
+
+@media (min-width: 992px) {
+  .products-catalog > * {
+    flex-basis: calc(33.333% - 9.34px);
+    max-width: calc(33.333% - 9.34px);
+  }
+}
+
+@media (min-width: 1200px) {
+  .products-catalog > * {
+    flex-basis: calc(25% - 10.5px);
+    max-width: calc(25% - 10.5px);
+  }
+}
+
+@media (min-width: 1400px) {
+  .products-catalog > * {
+    flex-basis: calc(25% - 10.5px);
+    max-width: calc(25% - 10.5px);
+  }
+}
+
+.benefits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.benefits > * {
+  flex: 1 1 calc(33.333% - 14px);
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.footer-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-grid > * {
+  flex: 1 1 calc(25% - 15px);
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 991px) {
+  .benefits > * {
+    flex: 1 1 100%;
+  }
+  .footer-grid > * {
+    flex: 1 1 calc(50% - 10px);
+  }
+}
+
+@media (max-width: 575px) {
+  .products > *,
+  .products-catalog > * {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+  .footer-grid > * {
+    flex: 1 1 100%;
+  }
+}

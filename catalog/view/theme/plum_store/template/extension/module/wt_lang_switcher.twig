@@ -1,21 +1,18 @@
-{% if languages|length > 1 %}
-<div class="pull-left">
-  <div class="btn-group">
-    <button class="btn btn-link dropdown-toggle" data-toggle="dropdown">
-      {% for language in languages %}
-      {% if language.current %}
-      <img src="catalog/language/{{ language.code }}/{{ language.code }}.png" alt="{{ language.name }}" title="{{ language.name }}">
-      {% endif %}
-      {% endfor %}
-      <span class="hidden-xs hidden-sm hidden-md">{{ text_language }}</span>&nbsp;<i class="fa fa-caret-down"></i>
-    </button>
-    <ul class="dropdown-menu">
-      {% for language in languages %}
-      <li>
-        <a href="{{ language.href }}"><img src="catalog/language/{{ language.code }}/{{ language.code }}.png" alt="{{ language.name }}" title="{{ language.name }}" /> {{ language.name }}</a>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
+{% if languages %}
+<div class="topbar-dd" data-dropdown>
+  <button type="button" class="topbar-dd-btn" aria-expanded="false" aria-haspopup="listbox">
+    <span class="topbar-dd-label" data-dd-label>{% for language in languages %}{% if language.current %}{{ language.code|split('-')|first|upper }}{% endif %}{% endfor %}</span>
+    <svg class="icon icon-chevron" aria-hidden="true"><use href="catalog/view/theme/plum_store/image/icons.svg#i-chevron"></use></svg>
+  </button>
+  {% if languages|length > 1 %}
+  <ul class="topbar-dd-menu" role="listbox">
+    {% for language in languages %}
+    {% set item_label = language.code|split('-')|first|upper %}
+    <li>
+      <a href="{{ language.href }}" class="topbar-dd-item{% if language.current %} is-active{% endif %}" data-value="{{ language.code }}" data-label="{{ item_label }}" title="{{ language.name }}">{{ item_label }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
 </div>
 {% endif %}

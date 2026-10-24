@@ -22,6 +22,9 @@ $_['text_scheme_emerald']              = 'Emerald';
 $_['entry_directory']                  = 'Theme Directory';
 $_['entry_status']                     = 'Status';
 $_['entry_color_scheme']               = 'Color scheme';
+$_['entry_header_layout']              = 'Header layout';
+$_['text_header_1']                    = 'Header 1';
+$_['text_header_2']                    = 'Header 2';
 $_['entry_logo']                       = 'Logo (SVG/PNG)';
 $_['entry_product_limit']              = 'Default Items Per Page';
 $_['entry_product_description_length'] = 'List Description Limit';
@@ -45,6 +48,8 @@ $_['help_product_limit']               = 'Determines how many catalog items are 
 $_['help_product_description_length']  = 'In the list view, short description character limit (categories, special etc)';
 $_['help_color_scheme']                = 'Ready-made setka schemes (same as the storefront theme switcher).';
 $_['help_logo']                        = 'Upload SVG via the file manager (SVG module). Empty = built-in theme logo.';
+$_['entry_top']                        = 'Show in header';
+$_['help_top']                         = 'Show this information page in the Plum Store top bar.';
 
 // Error
 $_['error_permission']                 = 'Warning: You do not have permission to modify the Plum Store theme!';

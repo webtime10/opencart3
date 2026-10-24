@@ -1,0 +1,23 @@
+<?php
+$_['heading_title']     = 'WT Benefits';
+$_['text_extension']    = 'Extensions';
+$_['text_success']      = 'Success: You have modified WT Benefits!';
+$_['text_edit']         = 'Edit WT Benefits';
+$_['text_enabled']      = 'Enabled';
+$_['text_disabled']     = 'Disabled';
+$_['text_items']        = 'Items';
+$_['text_item']         = 'Item';
+$_['text_no_items']     = 'No items yet. Click “Add item”.';
+$_['entry_name']        = 'Module Name';
+$_['entry_status']      = 'Status';
+$_['entry_image']       = 'Logo / icon';
+$_['entry_title']       = 'Title';
+$_['entry_description'] = 'Description';
+$_['entry_sort_order']  = 'Sort Order';
+$_['help_image']        = 'SVG (black outline preferred) — storefront color follows the theme.';
+$_['button_item_add']   = 'Add item';
+$_['button_remove']     = 'Remove';
+$_['button_save']       = 'Save';
+$_['button_cancel']     = 'Cancel';
+$_['error_permission']  = 'Warning: You do not have permission to modify WT Benefits!';
+$_['error_name']        = 'Module Name must be between 3 and 64 characters!';

@@ -1,0 +1,164 @@
+/* Horizontal mega-nav (lopata) — setka_test / Plum Store */
+
+.wt_meganav {
+  position: relative;
+  z-index: 90;
+  background: var(--meganav-bg);
+  border-top: 3px solid var(--meganav-border);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.wt_meganav > .wt_container {
+  position: relative;
+}
+
+.wt_meganav_list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wt_meganav_list > li {
+  position: static;
+}
+
+.wt_meganav_list > li > a {
+  display: block;
+  padding: 13px 18px;
+  color: var(--meganav-text);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.wt_meganav_list > li > a:hover,
+.wt_meganav_list > li.is-open > a,
+.wt_meganav_list > li:focus-within > a {
+  background: var(--meganav-hover-bg);
+  color: var(--meganav-hover-text);
+}
+
+.wt_meganav_caret {
+  margin-left: 4px;
+  font-size: 10px;
+  color: var(--meganav-muted);
+  vertical-align: middle;
+}
+
+.wt_meganav_list > li.is-open .wt_meganav_caret,
+.wt_meganav_list > li > a:hover .wt_meganav_caret {
+  color: var(--accent);
+}
+
+.wt_meganav_layer {
+  position: relative;
+}
+
+.wt_mega {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 95;
+  min-width: 280px;
+  padding: 18px 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* Одна колонка / мало пунктов — узкая лопата */
+.wt_mega.is-narrow,
+.wt_mega:has(.wt_mega_grid.grid-1) {
+  min-width: 0;
+  max-width: 216px;
+  width: 216px;
+  padding: 12px 16px;
+}
+
+.wt_mega[hidden] {
+  display: none !important;
+}
+
+.wt_mega_grid {
+  display: grid;
+  gap: 28px 36px;
+  min-width: 0;
+}
+
+.wt_mega_grid.grid-1 { grid-template-columns: minmax(0, 1fr); }
+.wt_mega_grid.grid-2 { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
+.wt_mega_grid.grid-3 { grid-template-columns: repeat(3, minmax(140px, 1fr)); }
+.wt_mega_grid.grid-4 { grid-template-columns: repeat(4, minmax(140px, 1fr)); }
+
+.wt_mega h4 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.wt_mega h4 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.wt_mega h4 a:hover {
+  color: var(--link-hover);
+}
+
+.wt_mega ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wt_mega li + li {
+  margin-top: 8px;
+}
+
+.wt_mega ul a {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.wt_mega ul a:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 767px) {
+  .wt_meganav_list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .wt_meganav_list > li > a {
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+
+  .wt_mega {
+    left: 0 !important;
+    right: 0;
+    width: auto !important;
+    max-width: none !important;
+    border-radius: 0 0 8px 8px;
+  }
+
+  .wt_mega_grid.grid-3,
+  .wt_mega_grid.grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

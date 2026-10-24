@@ -1,0 +1,238 @@
+/* Big banner Swiper */
+.slider-container.wt-big-banner,
+.wt-big-banner .wt-swiper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 462px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.wt-big-banner .swiper-slide {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 462px;
+  padding: 32px 56px;
+  background: linear-gradient(135deg, #2a2a2a, #3d3d3d);
+  color: #fff;
+  overflow: hidden;
+  a
+}
+
+
+.wt-home-stage {
+  width: 100%;
+}
+
+.wt-home-bottom {
+  width: 100%;
+  margin-top: 9px;
+}
+
+.wt-row-home{
+  display: flex;
+  margin-top: 7px;
+
+    gap: 11px;
+}
+.wt-row-home #column-left{
+width: 325px;
+flex-shrink: 1; 
+  min-width: 0;
+}
+.wt-row-home #column-right{
+  width: 336px;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.wt-row-home #wt-content-home{
+  max-width: 1000px;
+  min-width: 0;
+}
+.wt-big-banner .wt-slide-img-link {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 300px;
+  display: block;
+  line-height: 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.wt-big-banner .wt-slide-img {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  background: #fff;
+}
+
+.wt-big-banner .home-slide-body {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: none;
+  padding: 0;
+}
+
+.wt-big-banner .home-slide-body small {
+  display: inline-block;
+  margin-bottom: 10px;
+  opacity: 0.85;
+  font-weight: 700;
+}
+
+.wt-big-banner .home-slide-body h2 {
+  margin: 0 0 8px;
+  font-size: 34px;
+  line-height: 1.1;
+  color: inherit;
+}
+
+.wt-big-banner .home-slide-body p {
+  margin: 0 0 16px;
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.wt-big-banner .swiper-button-prev,
+.wt-big-banner .swiper-button-next {
+  width: 36px;
+  height: 36px;
+  margin-top: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: #333;
+  z-index: 3;
+}
+
+.wt-big-banner .swiper-button-prev::after,
+.wt-big-banner .swiper-button-next::after {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.wt-big-banner .swiper-button-prev {
+  left: 10px;
+}
+
+.wt-big-banner .swiper-button-next {
+  right: 10px;
+}
+
+#wt-content {
+  min-height: 462px;
+}
+
+/* Mini banner Swiper (product tiles) */
+.slider-container.wt-mini-banner,
+.wt-mini-banner .wt-mini-swiper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 222px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.wt-mini-banner .swiper-slide {
+  height: auto;
+}
+
+.wt-mini-banner .home-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  min-height: 222px;
+  height: 100%;
+  padding: 16px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #2a2a2a, #3d3d3d);
+  color: #fff;
+  overflow: hidden;
+  justify-content: center;
+}
+
+.wt-mini-banner .wt-slide-img-link {
+  flex: 0 0 220px;
+  display: block;
+  line-height: 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.wt-mini-banner .wt-slide-img {
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  background: #fff;
+}
+
+.wt-mini-banner .home-tile-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: center;
+  color: inherit;
+}
+
+.wt-mini-banner .home-tile strong {
+  font-size: 16px;
+  line-height: 1.2;
+  color: inherit;
+}
+
+.wt-mini-banner .home-tile-more {
+  margin-top: 4px;
+}
+
+.wt-mini-banner .home-tile-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.65);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.wt-mini-banner .swiper-button-prev,
+.wt-mini-banner .swiper-button-next {
+  width: 28px;
+  height: 28px;
+  margin-top: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: #333;
+  z-index: 3;
+}
+
+.wt-mini-banner .swiper-button-prev::after,
+.wt-mini-banner .swiper-button-next::after {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.wt-mini-banner .swiper-button-prev { left: 8px; }
+.wt-mini-banner .swiper-button-next { right: 8px; }

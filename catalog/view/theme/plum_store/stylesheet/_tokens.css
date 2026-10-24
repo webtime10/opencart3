@@ -1,10 +1,17 @@
 /* Color schemes only — layout sizes stay hardcoded in CSS */
 :root,
+html.theme-dark,
 body.theme-dark {
   --topbar-bg: #1a1a1a;
   --topbar-text: #c4c4c4;
   --topbar-link: #ececec;
   --topbar-border: #e4b91c;
+  --meganav-bg: #f5f2eb;
+  --meganav-text: #2a2a2a;
+  --meganav-muted: #6b6b6b;
+  --meganav-hover-bg: #ebe6dc;
+  --meganav-hover-text: #1a1a1a;
+  --meganav-border: #e4b91c;
 
   --header-bg: #242424;
   --header-text: #f5f5f5;
@@ -46,11 +53,17 @@ body.theme-dark {
 }
 
 /* Beige — dark topbar, white header, warm sand page, terracotta accent */
-body.theme-light {
+html.theme-light, body.theme-light {
   --topbar-bg: #2c2824;
   --topbar-text: #cfc6bc;
   --topbar-link: #f3ebe3;
   --topbar-border: #b86b4f;
+  --meganav-bg: #2c2824;
+  --meganav-text: #f3ebe3;
+  --meganav-muted: #b0a69c;
+  --meganav-hover-bg: #3a342e;
+  --meganav-hover-text: #ffffff;
+  --meganav-border: #b86b4f;
 
   --header-bg: #ffffff;
   --header-text: #2a2420;
@@ -89,11 +102,17 @@ body.theme-light {
   --focus: #b86b4f;
 }
 
-body.theme-ocean {
+html.theme-ocean, body.theme-ocean {
   --topbar-bg: #0a222c;
   --topbar-text: #a8c0ca;
   --topbar-link: #e8f2f6;
   --topbar-border: #2a9fc7;
+  --meganav-bg: #e8f3f7;
+  --meganav-text: #123645;
+  --meganav-muted: #5a7380;
+  --meganav-hover-bg: #d7eaf1;
+  --meganav-hover-text: #0a222c;
+  --meganav-border: #2a9fc7;
 
   --header-bg: #123645;
   --header-text: #f2f8fa;
@@ -132,11 +151,17 @@ body.theme-ocean {
   --focus: #2a9fc7;
 }
 
-body.theme-plum {
+html.theme-plum, body.theme-plum {
   --topbar-bg: #241420;
   --topbar-text: #cbb6c5;
   --topbar-link: #f3eaf0;
   --topbar-border: #b85a82;
+  --meganav-bg: #f3e9ef;
+  --meganav-text: #2a1526;
+  --meganav-muted: #6e5568;
+  --meganav-hover-bg: #e9d5e0;
+  --meganav-hover-text: #241420;
+  --meganav-border: #b85a82;
 
   --header-bg: #3a2434;
   --header-text: #f8f2f6;
@@ -176,11 +201,17 @@ body.theme-plum {
 }
 
 /* Olive — dusty olive / warm sand (khaki mood, soft & practical) */
-body.theme-olive {
+html.theme-olive, body.theme-olive {
   --topbar-bg: #e9e4d6;
   --topbar-text: #5a5646;
   --topbar-link: #2e2c24;
   --topbar-border: #8a8658;
+  --meganav-bg: #2e2c24;
+  --meganav-text: #f5f2e9;
+  --meganav-muted: #c9c3b0;
+  --meganav-hover-bg: #3d3a30;
+  --meganav-hover-text: #ffffff;
+  --meganav-border: #8a8658;
 
   --header-bg: #ffffff;
   --header-text: #2e2c24;
@@ -222,11 +253,17 @@ body.theme-olive {
 }
 
 /* Emerald — light emerald green; white header vs mint page */
-body.theme-emerald {
+html.theme-emerald, body.theme-emerald {
   --topbar-bg: #e6f2ec;
   --topbar-text: #3d5c4d;
   --topbar-link: #1f3d32;
   --topbar-border: #2f8f6b;
+  --meganav-bg: #1f3d32;
+  --meganav-text: #f3faf6;
+  --meganav-muted: #b8d4c6;
+  --meganav-hover-bg: #2a5243;
+  --meganav-hover-text: #ffffff;
+  --meganav-border: #2f8f6b;
 
   --header-bg: #ffffff;
   --header-text: #1f3d32;

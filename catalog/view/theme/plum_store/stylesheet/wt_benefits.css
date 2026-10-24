@@ -1,0 +1,75 @@
+/* WT Benefits — info bar (mask icons + theme accent) */
+.wt-benefits.benefits-bar {
+  background: var(--benefits-bg, #3a2434);
+  color: var(--benefits-text, #f8f2f6);
+  padding: 22px 0;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.wt-home-bottom .wt-benefits.benefits-bar {
+  width: 100%;
+}
+
+.wt-home-bottom {
+  margin-top: 9px;
+}
+
+.wt-benefits__grid.benefits {
+  display: grid;
+  grid-template-columns: repeat(var(--wt-benefits-cols, 3), minmax(0, 1fr));
+  gap: 20px 28px;
+  align-items: start;
+}
+
+.wt-benefits__item.benefit {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.wt-benefits__icon.icon {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  background-color: var(--accent, #c77a9a);
+  -webkit-mask-image: var(--wt-icon);
+  mask-image: var(--wt-icon);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.wt-benefits__body {
+  min-width: 0;
+}
+
+.wt-benefits__title {
+  display: block;
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--benefits-text, #f8f2f6);
+}
+
+.wt-benefits__text {
+  display: block;
+  color: var(--benefits-muted, #cbb6c5);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+@media (max-width: 991px) {
+  .wt-benefits__grid.benefits {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}

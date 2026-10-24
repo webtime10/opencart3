@@ -6,6 +6,7 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  overflow-x: visible;
 }
 
 body {
@@ -16,6 +17,7 @@ body {
   line-height: 1.55;
   color: var(--text);
   background: var(--page-bg);
+  overflow-x: visible;
 }
 
 img {

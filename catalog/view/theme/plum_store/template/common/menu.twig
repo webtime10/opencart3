@@ -1,30 +1,56 @@
 {% if categories %}
-<div class="container">
-  <nav id="menu" class="navbar">
-    <div class="navbar-header"><span id="category" class="visible-xs">{{ text_category }}</span>
-      <button type="button" class="btn btn-navbar navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse"><i class="fa fa-bars"></i></button>
-    </div>
-    <div class="collapse navbar-collapse navbar-ex1-collapse">
-      <ul class="nav navbar-nav">
-        {% for category in categories %}
-        {% if category.children %}
-        <li class="dropdown"><a href="{{ category.href }}" class="dropdown-toggle" data-toggle="dropdown">{{ category.name }}</a>
-          <div class="dropdown-menu">
-            <div class="dropdown-inner"> {% for children in category.children|batch(category.children|length / category.column|round(1, 'ceil')) %}
-              <ul class="list-unstyled">
-                {% for child in children %}
-                <li><a href="{{ child.href }}">{{ child.name }}</a></li>
-                {% endfor %}
-              </ul>
-              {% endfor %}</div>
-            <a href="{{ category.href }}" class="see-all">{{ text_all }} {{ category.name }}</a> </div>
-        </li>
-        {% else %}
-        <li><a href="{{ category.href }}">{{ category.name }}</a></li>
-        {% endif %}
+<div class="vmenu" data-vmenu>
+  <ul class="vmenu-list" role="menu">
+    {% for category in categories %}
+    {% set cat_id = 'cat' ~ category.category_id|default(loop.index) %}
+    {% if category.children %}
+    <li class="vmenu-item" role="none" data-vmenu-item="{{ cat_id }}">
+      <a href="{{ category.href }}" role="menuitem">
+        <span class="vmenu-label">{{ category.name }}</span>
+        <span class="vmenu-chev" aria-hidden="true">›</span>
+      </a>
+    </li>
+    {% else %}
+    <li class="vmenu-item" role="none" data-vmenu-item="{{ cat_id }}">
+      <a href="{{ category.href }}" role="menuitem">
+        <span class="vmenu-label">{{ category.name }}</span>
+      </a>
+    </li>
+    {% endif %}
+    {% endfor %}
+  </ul>
+
+  <div class="vmenu-flyout" data-vmenu-flyout hidden>
+    {% for category in categories %}
+    {% if category.children %}
+    {% set cat_id = 'cat' ~ category.category_id|default(loop.index) %}
+    {% set total = category.children|length %}
+    {% if total > 12 %}
+      {% set batch = (total / 3)|round(0, 'ceil') %}
+    {% elseif total > 6 %}
+      {% set batch = (total / 2)|round(0, 'ceil') %}
+    {% else %}
+      {% set batch = total %}
+    {% endif %}
+    <div class="vmenu-panel" data-vmenu-panel="{{ cat_id }}" hidden>
+      <div class="vmenu-cols">
+        {% for children in category.children|batch(batch) %}
+        <div class="vmenu-col">
+          {% if loop.first %}
+          <h4><a href="{{ category.href }}">{{ category.name }}</a></h4>
+          {% endif %}
+          <ul>
+            {% for child in children %}
+            <li><a href="{{ child.href }}">{{ child.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
         {% endfor %}
-      </ul>
+      </div>
+      <p class="vmenu-see-all"><a href="{{ category.href }}">{{ text_all }} {{ category.name }}</a></p>
     </div>
-  </nav>
+    {% endif %}
+    {% endfor %}
+  </div>
 </div>
-{% endif %} 
+{% endif %}

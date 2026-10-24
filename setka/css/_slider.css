@@ -1,0 +1,153 @@
+/* Product carousel (myslider → theme) */
+
+.wt_slider_block {
+  min-width: 0;
+}
+
+.wt_section_top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.wt_section_top .wt_section_title {
+  margin-bottom: 0;
+}
+
+.wt_slider_nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.wt_slider_nav--bottom {
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.wt_slider_btn {
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text);
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.wt_slider_btn .wt_icon,
+.wt_slider_btn svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  display: block;
+}
+
+.wt_slider_btn:hover:not(:disabled) {
+  background: transparent;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.wt_slider_btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.wt_slider_btn--sm {
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+}
+
+.wt_slider_btn--sm .wt_icon,
+.wt_slider_btn--sm svg {
+  width: 14px;
+  height: 14px;
+}
+
+.wt_slider {
+  min-width: 0;
+}
+
+.wt_slider_viewport {
+  overflow: hidden;
+  cursor: grab;
+  min-width: 0;
+}
+
+.wt_slider_viewport.wt_slider_grabbing {
+  cursor: grabbing;
+}
+
+.wt_slider_track {
+  display: flex;
+  will-change: transform;
+  transition: transform 0.35s ease;
+  touch-action: pan-y;
+}
+
+.wt_slider_track.wt_slider_dragging {
+  transition: none;
+}
+
+.wt_slider_slide {
+  flex: 0 0 auto;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Until JS measures widths — show ~4 cards so layout never blank */
+.wt_slider:not(.wt_slider_ready) .wt_slider_slide {
+  width: calc((100% - 72px) / 4);
+  margin-right: 24px;
+}
+
+@media (max-width: 991px) {
+  .wt_slider:not(.wt_slider_ready) .wt_slider_slide {
+    width: calc((100% - 40px) / 3);
+    margin-right: 20px;
+  }
+}
+
+@media (max-width: 767px) {
+  .wt_slider:not(.wt_slider_ready) .wt_slider_slide {
+    width: calc((100% - 16px) / 2);
+    margin-right: 16px;
+  }
+}
+
+@media (max-width: 575px) {
+  .wt_slider:not(.wt_slider_ready) .wt_slider_slide {
+    width: 100%;
+    margin-right: 16px;
+  }
+}
+
+.wt_slider_slide > .wt_card {
+  height: 100%;
+}
+
+.wt_slider--drawer .wt_slider_viewport {
+  min-height: 0;
+}
+
+.wt_slider--drawer:not(.wt_slider_ready) .wt_slider_slide {
+  width: calc((100% - 10px) / 2);
+  margin-right: 10px;
+}
+
+.wt_slider--drawer .wt_cart_drawer_upsell_card {
+  height: 100%;
+}

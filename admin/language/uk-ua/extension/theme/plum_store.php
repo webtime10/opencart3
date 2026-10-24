@@ -23,6 +23,9 @@ $_['text_scheme_emerald']              = 'Emerald';
 $_['entry_directory']                  = 'Директорія шаблону';
 $_['entry_status']                     = 'Статус';
 $_['entry_color_scheme']               = 'Кольорова схема';
+$_['entry_header_layout']              = 'Макет шапки';
+$_['text_header_1']                    = 'Хедер 1';
+$_['text_header_2']                    = 'Хедер 2';
 $_['entry_logo']                       = 'Логотип (SVG/PNG)';
 $_['entry_product_limit']              = 'Товарів на сторінці';
 $_['entry_product_description_length'] = 'Знаків у короткому описі';
@@ -46,6 +49,8 @@ $_['help_product_limit']               = 'Скільки елементів по
 $_['help_product_description_length']  = 'Кількість знаків в описі товару у списках';
 $_['help_color_scheme']                = 'Готові схеми з сітки теми (як у перемикачі на вітрині).';
 $_['help_logo']                        = 'Можна завантажити SVG через файловий менеджер (модуль SVG). Порожньо — вбудований логотип теми.';
+$_['entry_top']                        = 'Показувати у шапці';
+$_['help_top']                         = 'Показувати цю інформаційну сторінку у верхньому меню Plum Store.';
 
 // Error
 $_['error_permission']                 = 'У вас недостатньо прав для зміни теми Plum Store!';

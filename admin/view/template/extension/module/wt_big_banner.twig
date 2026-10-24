@@ -1,0 +1,315 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-module" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3></div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-module" class="form-horizontal">
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-name">{{ entry_name }}</label>
+            <div class="col-sm-10">
+              <input type="text" name="name" value="{{ name }}" id="input-name" class="form-control"/>
+              {% if error_name %}<div class="text-danger">{{ error_name }}</div>{% endif %}
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <select name="status" id="input-status" class="form-control">
+                <option value="1"{% if status %} selected{% endif %}>{{ text_enabled }}</option>
+                <option value="0"{% if not status %} selected{% endif %}>{{ text_disabled }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-per-view">{{ entry_per_view }}</label>
+            <div class="col-sm-10">
+              <select name="per_view" id="input-per-view" class="form-control" style="max-width:120px;">
+                {% for n in 1..4 %}
+                <option value="{{ n }}"{% if per_view == n %} selected{% endif %}>{{ n }}</option>
+                {% endfor %}
+              </select>
+              <span class="help-block">{{ help_per_view }}</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-autoplay">{{ entry_autoplay }}</label>
+            <div class="col-sm-10">
+              <input type="number" name="autoplay" value="{{ autoplay }}" id="input-autoplay" class="form-control" style="max-width:160px;" min="0" step="500"/>
+              <span class="help-block">{{ help_autoplay }}</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ text_items }}</label>
+            <div class="col-sm-10">
+              <button type="button" id="wt-banner-add" class="btn btn-success"><i class="fa fa-plus"></i> {{ button_item_add }}</button>
+              <div id="wt-banner-empty" class="alert alert-info" style="margin-top:12px;{% if items %}display:none{% endif %}">{{ text_no_items }}</div>
+              <style>
+                #wt-banner-list .wt-banner-row { margin-bottom: 16px; }
+                #wt-banner-list .wt-banner-row > .panel-heading { padding: 12px 20px; }
+                #wt-banner-list .wt-banner-row > .panel-body { padding: 20px 24px 16px; }
+                #wt-banner-list .wt-banner-row .form-group { margin-left: 0; margin-right: 0; }
+                #wt-banner-list .wt-banner-row .row { margin-left: -8px; margin-right: -8px; }
+                #wt-banner-list .wt-banner-row .row > [class*="col-"] { padding-left: 8px; padding-right: 8px; }
+              </style>
+              <div id="wt-banner-list" style="margin-top:12px;">
+                {% for item in items %}
+                {% set row = loop.index0 %}
+                <div class="panel panel-default wt-banner-row" data-row="{{ row }}">
+                  <div class="panel-heading clearfix">
+                    <strong>{{ text_item }} #<span class="wt-row-num">{{ row + 1 }}</span></strong>
+                    <button type="button" class="btn btn-danger btn-xs pull-right wt-banner-remove"><i class="fa fa-trash"></i></button>
+                  </div>
+                  <div class="panel-body">
+                    <div class="form-group">
+                      <label class="control-label">{{ entry_product }}</label>
+                      <input type="text" value="{{ item.product_name }}" class="form-control wt-product-name" placeholder="{{ help_product }}"/>
+                      <input type="hidden" name="item[{{ row }}][product_id]" value="{{ item.product_id }}" class="wt-product-id"/>
+                      <input type="hidden" name="item[{{ row }}][product_name]" value="{{ item.product_name }}" class="wt-product-name-hidden"/>
+                      <span class="help-block">{{ help_product_image }}</span>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label">{{ entry_title }}</label>
+                      <input type="text" name="item[{{ row }}][title]" value="{{ item.title }}" class="form-control" placeholder="{{ help_title }}"/>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label">{{ entry_description }}</label>
+                      <textarea name="item[{{ row }}][description]" rows="2" class="form-control">{{ item.description }}</textarea>
+                    </div>
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <label class="control-label">{{ entry_percent }}</label>
+                        <input type="text" name="item[{{ row }}][percent]" value="{{ item.percent }}" class="form-control" placeholder="-40%"/>
+                      </div>
+                      <div class="col-sm-4">
+                        <label class="control-label">{{ entry_sort_order }}</label>
+                        <input type="number" name="item[{{ row }}][sort_order]" value="{{ item.sort_order }}" class="form-control"/>
+                      </div>
+                      <div class="col-sm-4">
+                        <label class="control-label">{{ entry_status }}</label>
+                        <select name="item[{{ row }}][status]" class="form-control">
+                          <option value="1"{% if item.status %} selected{% endif %}>{{ text_enabled }}</option>
+                          <option value="0"{% if not item.status %} selected{% endif %}>{{ text_disabled }}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript"><!--
+(function ($) {
+  var row = {{ items|length }};
+  var token = {{ user_token|json_encode|raw }};
+  var textItem = {{ text_item|json_encode|raw }};
+  var textEnabled = {{ text_enabled|json_encode|raw }};
+  var textDisabled = {{ text_disabled|json_encode|raw }};
+
+  function renumber() {
+    $('#wt-banner-list .wt-banner-row').each(function (i) { $(this).find('.wt-row-num').text(i + 1); });
+    $('#wt-banner-empty').toggle(!$('#wt-banner-list .wt-banner-row').length);
+  }
+
+  function markProduct($row) {
+    var pid = parseInt($row.find('.wt-product-id').val(), 10) || 0;
+    var $hint = $row.find('.wt-product-ok');
+    if (!$hint.length) {
+      $hint = $('<div class="wt-product-ok" style="margin-top:6px;"></div>');
+      $row.find('.wt-product-name').closest('.form-group').append($hint);
+    }
+    if (pid > 0) {
+      $hint.html('<span class="text-success"><i class="fa fa-check"></i> Товар выбран, ID: ' + pid + '</span>');
+      $row.find('.wt-product-name').css('border-color', '#3c763d');
+    } else {
+      $hint.html('<span class="text-muted"><i class="fa fa-info-circle"></i> Начните ввод и кликните товар в списке (или введите точное название)</span>');
+      $row.find('.wt-product-name').css('border-color', '');
+    }
+  }
+
+  function bindProduct($row) {
+    var $input = $row.find('.wt-product-name');
+    var $id = $row.find('.wt-product-id');
+    var $hiddenName = $row.find('.wt-product-name-hidden');
+    var lockedName = $.trim($input.val());
+
+    function setProduct(pid, name) {
+      $id.val(pid || 0);
+      $input.val(name || '');
+      $hiddenName.val(name || '');
+      lockedName = $.trim(name || '');
+      markProduct($row);
+    }
+
+    $input.on('input', function () {
+      var v = $.trim($(this).val());
+      $hiddenName.val(v);
+      if (v !== lockedName) {
+        $id.val('0');
+        markProduct($row);
+      }
+    });
+
+    $input.on('blur', function () {
+      setTimeout(function () {
+        var v = $.trim($input.val());
+        $hiddenName.val(v);
+        if (!v) { setProduct(0, ''); return; }
+        if ((parseInt($id.val(), 10) || 0) > 0 && v === lockedName) return;
+        $.ajax({
+          url: 'index.php?route=catalog/product/autocomplete&user_token=' + encodeURIComponent(token) + '&filter_name=' + encodeURIComponent(v),
+          dataType: 'json'
+        }).done(function (json) {
+          if (!json || !json.length) return;
+          var exact = null;
+          var vLow = v.toLowerCase();
+          for (var i = 0; i < json.length; i++) {
+            if (String(json[i]['name']).toLowerCase() === vLow) { exact = json[i]; break; }
+          }
+          if (!exact && json.length === 1) exact = json[0];
+          if (exact) setProduct(exact['product_id'], exact['name']);
+        });
+      }, 200);
+    });
+
+    $input.autocomplete({
+      'source': function (request, response) {
+        $.ajax({
+          url: 'index.php?route=catalog/product/autocomplete&user_token=' + encodeURIComponent(token) + '&filter_name=' + encodeURIComponent(request),
+          dataType: 'json',
+          success: function (json) {
+            response($.map(json, function (item) {
+              return { label: item['name'], value: String(item['product_id']), name: item['name'] };
+            }));
+          }
+        });
+      },
+      'select': function (item) {
+        setProduct(item['value'], item['label'] || item['name'] || '');
+      }
+    });
+    markProduct($row);
+  }
+
+  $('#form-module').on('submit', function (e) {
+    var $form = $(this);
+    if ($form.data('wt-ready')) return true;
+    e.preventDefault();
+
+    var $rows = $('#wt-banner-list .wt-banner-row');
+    var left = $rows.length;
+
+    function finish() {
+      var bad = 0;
+      $rows.each(function () {
+        var name = $.trim($(this).find('.wt-product-name').val());
+        var pid = parseInt($(this).find('.wt-product-id').val(), 10) || 0;
+        $(this).find('.wt-product-name-hidden').val(name);
+        if (name && pid < 1) {
+          bad++;
+          markProduct($(this));
+        }
+      });
+      if (bad > 0) {
+        alert('Не удалось найти товар для ' + bad + ' слайд(ов). Кликните товар в выпадающем списке.');
+        return;
+      }
+      $form.data('wt-ready', 1);
+      $form.trigger('submit');
+    }
+
+    if (!left) { finish(); return; }
+
+    $rows.each(function () {
+      var $row = $(this);
+      var $input = $row.find('.wt-product-name');
+      var $id = $row.find('.wt-product-id');
+      var name = $.trim($input.val());
+      var pid = parseInt($id.val(), 10) || 0;
+
+      function next() {
+        left--;
+        if (left <= 0) finish();
+      }
+
+      if (pid > 0 || !name) { next(); return; }
+
+      $.ajax({
+        url: 'index.php?route=catalog/product/autocomplete&user_token=' + encodeURIComponent(token) + '&filter_name=' + encodeURIComponent(name),
+        dataType: 'json'
+      }).done(function (json) {
+        if (!json || !json.length) return;
+        var exact = null;
+        var vLow = name.toLowerCase();
+        for (var i = 0; i < json.length; i++) {
+          if (String(json[i]['name']).toLowerCase() === vLow) { exact = json[i]; break; }
+        }
+        if (!exact && json.length === 1) exact = json[0];
+        if (exact) {
+          $id.val(exact['product_id']);
+          $input.val(exact['name']);
+          $row.find('.wt-product-name-hidden').val(exact['name']);
+          markProduct($row);
+        }
+      }).always(next);
+    });
+  });
+
+  $('#wt-banner-list .wt-banner-row').each(function () { bindProduct($(this)); });
+
+  $('#wt-banner-add').on('click', function () {
+    var r = row++;
+    var html = '';
+    html += '<div class="panel panel-default wt-banner-row" data-row="' + r + '">';
+    html += '<div class="panel-heading clearfix"><strong>' + textItem + ' #<span class="wt-row-num"></span></strong>';
+    html += '<button type="button" class="btn btn-danger btn-xs pull-right wt-banner-remove"><i class="fa fa-trash"></i></button></div>';
+    html += '<div class="panel-body">';
+    html += '<div class="form-group"><label class="control-label">{{ entry_product }}</label>';
+    html += '<input type="text" value="" class="form-control wt-product-name" placeholder="{{ help_product }}"/>';
+    html += '<input type="hidden" name="item[' + r + '][product_id]" value="0" class="wt-product-id"/>';
+    html += '<input type="hidden" name="item[' + r + '][product_name]" value="" class="wt-product-name-hidden"/>';
+    html += '<span class="help-block">{{ help_product_image }}</span></div>';
+    html += '<div class="form-group"><label class="control-label">{{ entry_title }}</label><input type="text" name="item[' + r + '][title]" value="" class="form-control" placeholder="{{ help_title }}"/></div>';
+    html += '<div class="form-group"><label class="control-label">{{ entry_description }}</label><textarea name="item[' + r + '][description]" rows="2" class="form-control"></textarea></div>';
+    html += '<div class="row"><div class="col-sm-4"><label class="control-label">{{ entry_percent }}</label><input type="text" name="item[' + r + '][percent]" value="" class="form-control" placeholder="-40%"/></div>';
+    html += '<div class="col-sm-4"><label class="control-label">{{ entry_sort_order }}</label><input type="number" name="item[' + r + '][sort_order]" value="' + r + '" class="form-control"/></div>';
+    html += '<div class="col-sm-4"><label class="control-label">{{ entry_status }}</label><select name="item[' + r + '][status]" class="form-control"><option value="1" selected>' + textEnabled + '</option><option value="0">' + textDisabled + '</option></select></div></div>';
+    html += '</div></div>';
+    var $row = $(html);
+    $('#wt-banner-list').append($row);
+    bindProduct($row);
+    renumber();
+  });
+
+  $('#wt-banner-list').on('click', '.wt-banner-remove', function () {
+    $(this).closest('.wt-banner-row').remove();
+    renumber();
+  });
+})(jQuery);
+//--></script>
+{{ footer }}

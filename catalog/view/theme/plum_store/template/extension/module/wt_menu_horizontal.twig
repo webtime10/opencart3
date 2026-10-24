@@ -1,0 +1,48 @@
+{% if items %}
+<nav class="meganav" data-meganav aria-label="Menu">
+  <div class="container">
+    <ul class="meganav-list">
+      {% for item in items %}
+      {% set item_id = 'hm' ~ item.id %}
+      <li{% if item.children %} data-mega-panel="{{ item_id }}"{% endif %}>
+        <a href="{{ item.href }}">{{ item.name }}{% if item.children %} <span class="meganav-caret" aria-hidden="true">▾</span>{% endif %}</a>
+      </li>
+      {% endfor %}
+    </ul>
+    <div class="meganav-layer">
+      {% for item in items %}
+      {% if item.children %}
+      {% set item_id = 'hm' ~ item.id %}
+      {% set cols = item.children|slice(0, 5) %}
+      {% set col_count = cols|length %}
+      <div class="mega" data-mega-id="{{ item_id }}" hidden>
+        <div class="mega-grid grid-{{ col_count }}">
+          {% for child in cols %}
+          <section>
+            <h4><a href="{{ child.href }}">{{ child.name }}</a></h4>
+            {% if child.children %}
+            <ul>
+              {% for gchild in child.children %}
+              <li>
+                <a href="{{ gchild.href }}">{{ gchild.name }}</a>
+                {% if gchild.children %}
+                <ul class="mega-sub">
+                  {% for ggchild in gchild.children %}
+                  <li><a href="{{ ggchild.href }}">{{ ggchild.name }}</a></li>
+                  {% endfor %}
+                </ul>
+                {% endif %}
+              </li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </section>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</nav>
+{% endif %}

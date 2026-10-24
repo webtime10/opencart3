@@ -1,6 +1,19 @@
 {{ header }}
-<section class="home-stage">
-  {{ content_top }}
-  {{ content_bottom }}
-</section>
+<div id="wt-common-home" class="wt-container">
+  {# Блок 1: меню + баннеры #}
+  <div class="wt-home-stage">
+    <div class="wt-row-home container">
+      {{ column_left }}
+      <div id="wt-content-home" class="wt-col">{{ content_top }}</div>
+      {{ column_right }}
+    </div>
+  </div>
+
+  {# Блок 2: Benefits и другие модули content_bottom #}
+  {% if content_bottom %}
+  <div class="wt-home-bottom">
+    {{ content_bottom }}
+  </div>
+  {% endif %}
+</div>
 {{ footer }}

@@ -1,10 +1,39 @@
-<!DOCTYPE html>
-<html dir="{{ direction }}" lang="{{ lang }}">
+﻿<!DOCTYPE html>
+<html dir="{{ direction }}" lang="{{ lang }}" data-default-theme="{{ plum_color_scheme|default('theme-plum') }}">
   <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{ title }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+    (function () {
+      var KEY = "plum-store-theme";
+      var DEF_KEY = "plum-store-theme-default";
+      var THEMES = ["theme-dark", "theme-plum", "theme-light", "theme-ocean", "theme-olive", "theme-emerald"];
+      var def = document.documentElement.getAttribute("data-default-theme") || "theme-plum";
+      var t = null;
+      var savedDef = null;
+      try {
+        t = localStorage.getItem(KEY);
+        savedDef = localStorage.getItem(DEF_KEY);
+      } catch (e) {}
+      // Админ сменил схему — сбрасываем залипший localStorage
+      if (savedDef !== def || THEMES.indexOf(t) === -1) {
+        t = def;
+        try {
+          localStorage.setItem(KEY, def);
+          localStorage.setItem(DEF_KEY, def);
+        } catch (e) {}
+      }
+      var html = document.documentElement;
+      for (var i = 0; i < THEMES.length; i++) html.classList.remove(THEMES[i]);
+      html.classList.add(t);
+      window.__plumTheme = t;
+    })();
+    </script>
     {% if robots %}
       <meta name="robots" content="{{ robots }}"/>
     {% endif %}
@@ -25,15 +54,12 @@
     {% endif %}
     <meta property="og:site_name" content="{{ name }}"/>
     <script src="catalog/view/javascript/jquery/jquery-3.7.1.min.js" type="text/javascript"></script>
-    <link href="catalog/view/theme/plum_store/stylesheet/setka.css?v=themepop1" rel="stylesheet">
     {% for style in styles %}
       <link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}"/>
     {% endfor %}
-    {% for script in scripts %}
-      <script src="{{ script }}" type="text/javascript"></script>
-    {% endfor %}
+    <link href="catalog/view/theme/plum_store/stylesheet/setka.css?v=nocastle1" rel="stylesheet">
     <script src="catalog/view/javascript/common.js" type="text/javascript"></script>
-    <script src="catalog/view/theme/plum_store/js/theme.js?v=themepop1" type="text/javascript"></script>
+    <script src="catalog/view/theme/plum_store/js/theme.js?v=theme2" type="text/javascript"></script>
     {% for link in links %}
       <link href="{{ link.href }}" rel="{{ link.rel }}"{% if link.hreflang is defined %} hreflang="{{ link.hreflang }}"{% endif %}/>
     {% endfor %}
@@ -42,6 +68,22 @@
     {% endfor %}
   </head>
   <body class="{{ plum_color_scheme|default('theme-plum') }}" data-default-theme="{{ plum_color_scheme|default('theme-plum') }}">
+    <script>
+    (function () {
+      var THEMES = ["theme-dark", "theme-plum", "theme-light", "theme-ocean", "theme-olive", "theme-emerald"];
+      var t = window.__plumTheme;
+      if (THEMES.indexOf(t) === -1) {
+        t = document.body.getAttribute("data-default-theme") || "theme-plum";
+      }
+      var html = document.documentElement, body = document.body;
+      for (var i = 0; i < THEMES.length; i++) {
+        html.classList.remove(THEMES[i]);
+        body.classList.remove(THEMES[i]);
+      }
+      html.classList.add(t);
+      body.classList.add(t);
+    })();
+    </script>
     <div class="topbar">
       <div class="container topbar-inner">
         <div class="topbar-left" data-theme-root>
@@ -66,40 +108,17 @@
           </div>
         </div>
         <nav class="topbar-nav" aria-label="Info">
-          <a href="#">Про магазин</a>
-          <a href="#">Доставка</a>
-          <a href="#">Оплата</a>
-          <a href="#">Контакти</a>
+          {% for information in plum_informations %}
+          <a href="{{ information.href }}">{{ information.title }}</a>
+          {% endfor %}
+          <a href="{{ contact }}">Контакти</a>
         </nav>
         <div class="topbar-right">
-          <div class="topbar-dd" data-dropdown>
-            <button type="button" class="topbar-dd-btn" aria-expanded="false" aria-haspopup="listbox">
-              <span class="topbar-dd-label" data-dd-label>UA</span>
-              <svg class="icon icon-chevron" aria-hidden="true"><use href="catalog/view/theme/plum_store/image/icons.svg#i-chevron"></use></svg>
-            </button>
-            <ul class="topbar-dd-menu" role="listbox" hidden>
-              <li><button type="button" class="topbar-dd-item is-active" data-value="ua" data-label="UA">UA</button></li>
-              <li><button type="button" class="topbar-dd-item" data-value="en" data-label="EN">EN</button></li>
-              <li><button type="button" class="topbar-dd-item" data-value="pl" data-label="PL">PL</button></li>
-            </ul>
-          </div>
-
-          <div class="topbar-dd" data-dropdown>
-            <button type="button" class="topbar-dd-btn" aria-expanded="false" aria-haspopup="listbox">
-              <span class="topbar-dd-label" data-dd-label>UAH</span>
-              <svg class="icon icon-chevron" aria-hidden="true"><use href="catalog/view/theme/plum_store/image/icons.svg#i-chevron"></use></svg>
-            </button>
-            <ul class="topbar-dd-menu" role="listbox" hidden>
-              <li><button type="button" class="topbar-dd-item is-active" data-value="uah" data-label="UAH">UAH</button></li>
-              <li><button type="button" class="topbar-dd-item" data-value="pln" data-label="PLN">PLN</button></li>
-              <li><button type="button" class="topbar-dd-item" data-value="gbp" data-label="GBP">GBP</button></li>
-              <li><button type="button" class="topbar-dd-item" data-value="usd" data-label="USD">USD</button></li>
-            </ul>
-          </div>
-
-          <a class="topbar-account" href="#">
+          {{ language }}
+          {{ currency }}
+          <a class="topbar-account" href="{% if logged %}{{ account }}{% else %}{{ login }}{% endif %}">
             <svg class="icon icon-account" aria-hidden="true"><use href="catalog/view/theme/plum_store/image/icons.svg#i-user"></use></svg>
-            Особистий кабінет
+            {% if logged %}{{ text_account }}{% else %}{{ text_login }}{% endif %}
           </a>
         </div>
       </div>
@@ -115,7 +134,7 @@
                 <span>Каталог товарів</span>
               </button>
               <div class="vmenu-overlay" id="catalog-overlay" data-catalog-overlay hidden>
-            
+                {{ wt_menu }}
               </div>
             </div>
             <form class="search" action="#" method="get" role="search">
@@ -154,3 +173,7 @@
         </div>
       </div>
     </header>
+
+    {% if menu_bar %}
+    {{ menu_bar }}
+    {% endif %}

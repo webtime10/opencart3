@@ -104,6 +104,8 @@ class ControllerCommonHeader extends Controller {
 		$data['search'] = $this->load->controller('common/search');
 		$data['cart'] = $this->load->controller('common/cart');
 		$data['menu'] = $this->load->controller('common/menu');
+		$data['wt_menu'] = $this->load->controller('extension/module/wt_menu', array('__slot' => 1));
+		$data['menu_bar'] = $this->load->controller('common/menu_bar');
 
 		return $this->load->view('common/header', $data);
 	}

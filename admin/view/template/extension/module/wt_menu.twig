@@ -1,0 +1,354 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-module" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-bars"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-module" class="form-horizontal">
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-name">{{ entry_name }}</label>
+            <div class="col-sm-10">
+              <input type="text" name="name" value="{{ name }}" placeholder="{{ entry_name }}" id="input-name" class="form-control"/>
+              {% if error_name %}<div class="text-danger">{{ error_name }}</div>{% endif %}
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <select name="status" id="input-status" class="form-control">
+                {% if status %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+                {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-menu-slot">{{ entry_menu_slot }}</label>
+            <div class="col-sm-10">
+              <select name="menu_slot" id="input-menu-slot" class="form-control">
+                {% if menu_slot == 2 %}
+                <option value="1">{{ text_menu_1 }}</option>
+                <option value="2" selected="selected">{{ text_menu_2 }}</option>
+                {% else %}
+                <option value="1" selected="selected">{{ text_menu_1 }}</option>
+                <option value="2">{{ text_menu_2 }}</option>
+                {% endif %}
+              </select>
+              <p class="help-block">{{ help_menu_slot }}</p>
+            </div>
+          </div>
+
+          <fieldset>
+            <legend>{{ text_items }} <span id="wt-count" class="label label-default">{{ item_count }} {{ text_count }}</span></legend>
+            <p class="help-block">{{ text_item_help }}</p>
+
+            <div class="dd" id="wt-menu-tree">
+              {{ tree_html|raw }}
+            </div>
+
+            <div class="input-group" style="margin-top:10px; max-width:420px;">
+              <div class="form-control">{{ button_item_add }}</div>
+              <div class="input-group-btn">
+                <button type="button" onclick="wtAddRoot();" class="btn btn-primary" data-toggle="tooltip" title="{{ button_item_add }}"><i class="fa fa-plus-circle"></i></button>
+              </div>
+            </div>
+
+            <input type="hidden" name="tree_json" id="wt-tree-json" value=""/>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style type="text/css">
+.dd{position:relative;display:block;margin:0;padding:0;max-width:100%;list-style:none;font-size:13px;line-height:20px}
+.dd-list{display:block;position:relative;margin:0;padding:0;list-style:none}
+.dd-list .dd-list{padding-left:30px}
+.dd-collapsed .dd-list{display:none}
+.dd-item,.dd-empty,.dd-placeholder{display:block;position:relative;margin:0;padding:0;min-height:20px;font-size:13px;line-height:20px}
+.dd-handle{display:block;height:48px;margin:5px 0;padding:5px 10px;color:#333;text-decoration:none;font-weight:700;border:1px solid #ccc;background:#fafafa;border-radius:3px;box-sizing:border-box}
+.dd-item > button{display:block;position:relative;cursor:pointer;float:left;width:34px;height:34px;margin:6px 0;padding:0;text-indent:100%;white-space:nowrap;overflow:hidden;border:0;background:transparent;font-size:16px;line-height:1;text-align:center;font-weight:700}
+.dd-item > button:before{content:'+';display:block;position:absolute;width:100%;text-align:center;text-indent:0}
+.dd-item > button[data-action="collapse"]:before{content:'-'}
+.dd-placeholder,.dd-empty{margin:5px 0;padding:0;min-height:30px;background:#f2fbff;border:1px dashed #b6bcbf;box-sizing:border-box}
+.dd-dragel{position:absolute;pointer-events:none;z-index:9999}
+.dd-dragel .dd-handle{-webkit-box-shadow:2px 4px 6px 0 rgba(0,0,0,.1);box-shadow:2px 4px 6px 0 rgba(0,0,0,.1)}
+.dd3-content{display:block;min-height:46px;margin:5px 0 5px 29px;padding:5px 10px;color:#333;text-decoration:none;font-weight:700;border:1px solid #ccc;background:#fafafa;background:linear-gradient(top,#fafafa 0%,#eee 100%);border-radius:3px;box-sizing:border-box}
+.dd3-content:hover{color:#2ea8e5;background:#fff}
+.dd3-content .input-group{width:100%}
+.dd3-content .input-group .form-control{height:34px}
+.dd3-content .input-group-btn .btn{padding:6px 10px}
+.dd3-item > button{margin-left:30px}
+.dd3-handle{position:absolute;margin:0;left:0;top:0;cursor:move;width:30px;text-indent:100%;white-space:nowrap;overflow:hidden;border:1px solid #aaa;background:#ddd;background:linear-gradient(top,#ddd 0%,#bbb 100%);border-top-right-radius:0;border-bottom-right-radius:0}
+.dd3-handle:before{content:'≡';display:block;position:absolute;left:0;top:30%;width:100%;text-align:center;text-indent:0;color:#fff;font-size:20px;font-weight:400}
+.dd3-handle:hover{background:#ddd}
+.wt-thumb-wrap{display:inline-block;vertical-align:middle;margin:0 2px;position:relative}
+.wt-thumb-wrap > a.img-thumbnail{display:block;padding:2px;width:34px;height:34px;line-height:1;border-radius:3px;overflow:hidden}
+.wt-thumb-wrap > a.img-thumbnail img{display:block;width:28px;height:28px;object-fit:cover;margin:0 auto}
+.dd3-content{position:relative;overflow:visible}
+.dd3-content .dropdown-menu{z-index:10050;max-height:240px;overflow:auto}
+</style>
+
+<script type="text/javascript" src="view/javascript/buslikdrev/nestable/nestable.js"></script>
+<script type="text/javascript"><!--
+var item_row = {{ item_row }};
+var placeholder = {{ placeholder|json_encode|raw }};
+var user_token = {{ user_token|json_encode|raw }};
+var text_enabled = {{ text_enabled|json_encode|raw }};
+var text_disabled = {{ text_disabled|json_encode|raw }};
+
+function wtCount() {
+	var n = $('#wt-menu-tree .dd-item').length;
+	$('#wt-count').text(n + ' {{ text_count }}');
+}
+
+function wtUpdateJson() {
+	try {
+		var data = $('#wt-menu-tree').nestable('serialize');
+		$('#wt-tree-json').val(JSON.stringify(data));
+	} catch (e) {
+		console.log('wtUpdateJson', e);
+	}
+}
+
+function wtItemHtml(id) {
+	var html = '';
+	html += '<li class="dd-item dd3-item" data-id="' + id + '" id="wt-item-' + id + '">';
+	html += '  <div class="dd-handle dd3-handle"></div>';
+	html += '  <div class="dd3-content dd-nodrag">';
+	html += '    <div class="input-group">';
+	html += '      <input type="text" name="items[' + id + '][name]" value="" placeholder="{{ entry_item_name }}" class="form-control wt-item-name" />';
+	html += '      <input type="hidden" name="items[' + id + '][status]" value="1" id="wt-status-' + id + '" />';
+	html += '      <div class="input-group-btn">';
+	html += '        <button type="button" onclick="wtPickCategory(' + id + ');" data-toggle="tooltip" title="{{ button_category }}" class="btn btn-info"><i class="fa fa-folder"></i></button>';
+	html += '        <button type="button" onclick="wtAddChild(' + id + ');" data-toggle="tooltip" title="{{ button_add_child }}" class="btn btn-primary"><i class="fa fa-sitemap"></i></button>';
+	html += '        <button type="button" onclick="wtToggleStatus(' + id + ');" data-toggle="tooltip" title="' + text_enabled + '" class="btn btn-default" id="wt-status-btn-' + id + '"><i class="fa fa-pause"></i></button>';
+	html += '        <span class="wt-thumb-wrap">';
+	html += '          <a href="" id="wt-thumb-' + id + '" data-toggle="image" class="img-thumbnail"><img src="' + placeholder + '" alt="" data-placeholder="' + placeholder + '" /></a>';
+	html += '          <input type="hidden" name="items[' + id + '][image]" value="" id="wt-image-' + id + '" />';
+	html += '        </span>';
+	html += '        <button type="button" onclick="wtToggleSettings(' + id + ');" data-toggle="tooltip" title="{{ button_settings }}" class="btn btn-success"><i class="fa fa-cogs"></i></button>';
+	html += '        <button type="button" onclick="wtPickProduct(' + id + ');" data-toggle="tooltip" title="{{ button_product }}" class="btn btn-info"><i class="fa fa-shopping-cart"></i></button>';
+	html += '        <button type="button" onclick="wtDelete(' + id + ');" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button>';
+	html += '      </div>';
+	html += '    </div>';
+	html += '    <div id="wt-extra-' + id + '" class="wt-extra" style="display:none; margin-top:8px;">';
+	html += '      <input type="text" name="items[' + id + '][href]" value="" placeholder="{{ entry_item_href }}" class="form-control" id="wt-href-' + id + '" />';
+	html += '      <input type="text" id="wt-autocomplete-' + id + '" value="" placeholder="{{ entry_autocomplete }}" class="form-control" style="margin-top:5px; display:none;" />';
+	html += '    </div>';
+	html += '  </div>';
+	html += '</li>';
+	return html;
+}
+
+function wtLeafName(name) {
+	name = $('<textarea/>').html(String(name || '')).text();
+	name = name.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+	if (name.indexOf('>') === -1) {
+		return name;
+	}
+	var parts = name.split('>');
+	return $.trim(parts[parts.length - 1] || name);
+}
+
+function wtBindNameCategoryAutocomplete($input) {
+	if (!$input.length || $input.data('wt-ac')) {
+		return;
+	}
+
+	$input.data('wt-ac', 1);
+
+	var id = $input.closest('.dd-item').attr('data-id');
+
+	$input.autocomplete({
+		'source': function(request, response) {
+			if (!request || $.trim(request).length < 2) {
+				response([]);
+				return;
+			}
+
+			$.ajax({
+				url: 'index.php?route=catalog/category/autocomplete&user_token=' + encodeURIComponent(user_token) + '&filter_name=' + encodeURIComponent(request),
+				dataType: 'json',
+				success: function(json) {
+					response($.map(json, function(item) {
+						return {
+							label: item['name'],
+							value: item['category_id'],
+							name: item['name']
+						};
+					}));
+				}
+			});
+		},
+		'select': function(item) {
+			$input.val(wtLeafName(item['name'] || item['label']));
+			$('#wt-href-' + id).val('index.php?route=product/category&path=' + item['value']);
+			$('#wt-extra-' + id).show();
+		}
+	});
+}
+
+function wtInitItemAutocomplete(scope) {
+	$(scope || '#wt-menu-tree').find('.wt-item-name').each(function() {
+		wtBindNameCategoryAutocomplete($(this));
+	});
+}
+
+function wtAddRoot() {
+	var id = item_row++;
+	var $root = $('#wt-menu-tree > .dd-list');
+	if (!$root.length) {
+		$('#wt-menu-tree').html('<ol class="dd-list"></ol>');
+		$root = $('#wt-menu-tree > .dd-list');
+	}
+	$root.append(wtItemHtml(id));
+	$('[data-toggle="tooltip"]').tooltip({container: 'body'});
+	wtInitItemAutocomplete('#wt-item-' + id);
+	wtCount();
+	wtUpdateJson();
+	$('#wt-item-' + id + ' .wt-item-name').focus();
+}
+
+function wtAddChild(parentId) {
+	var id = item_row++;
+	var $parent = $('#wt-item-' + parentId);
+	var $list = $parent.children('ol.dd-list');
+	if (!$list.length) {
+		$parent.append('<ol class="dd-list"></ol>');
+		$list = $parent.children('ol.dd-list');
+	}
+	$list.append(wtItemHtml(id));
+	$('[data-toggle="tooltip"]').tooltip({container: 'body'});
+	wtInitItemAutocomplete('#wt-item-' + id);
+	wtCount();
+	wtUpdateJson();
+	$('#wt-item-' + id + ' .wt-item-name').focus();
+}
+
+function wtDelete(id) {
+	$('#wt-item-' + id).remove();
+	$('.tooltip').remove();
+	wtCount();
+	wtUpdateJson();
+}
+
+function wtToggleStatus(id) {
+	var $input = $('#wt-status-' + id);
+	var $btn = $('#wt-status-btn-' + id);
+	if ($input.val() == '1') {
+		$input.val('0');
+		$btn.find('i').attr('class', 'fa fa-play');
+		$btn.attr('data-original-title', text_disabled);
+	} else {
+		$input.val('1');
+		$btn.find('i').attr('class', 'fa fa-pause');
+		$btn.attr('data-original-title', text_enabled);
+	}
+	$('.tooltip').remove();
+}
+
+function wtToggleSettings(id) {
+	var $box = $('#wt-extra-' + id);
+	if ($box.is(':visible')) {
+		$box.hide();
+	} else {
+		$box.show();
+		$('#wt-autocomplete-' + id).hide();
+	}
+}
+
+function wtBindAutocomplete(id, type) {
+	var $input = $('#wt-autocomplete-' + id);
+	$input.show().val('').focus();
+	$input.off('focus blur keydown');
+	$input.next('.dropdown-menu').remove();
+
+	$input.autocomplete({
+		'source': function(request, response) {
+			if (!request || $.trim(request).length < 2) {
+				response([]);
+				return;
+			}
+
+			$.ajax({
+				url: 'index.php?route=catalog/' + type + '/autocomplete&user_token=' + encodeURIComponent(user_token) + '&filter_name=' + encodeURIComponent(request),
+				dataType: 'json',
+				success: function(json) {
+					response($.map(json, function(item) {
+						return {
+							label: item['name'],
+							value: item[type + '_id'],
+							name: item['name']
+						};
+					}));
+				}
+			});
+		},
+		'select': function(item) {
+			var name = item['name'] || item['label'];
+			if (type === 'category') {
+				name = wtLeafName(name);
+				$('#wt-href-' + id).val('index.php?route=product/category&path=' + item['value']);
+			} else {
+				$('#wt-href-' + id).val('index.php?route=product/product&product_id=' + item['value']);
+			}
+			$('#wt-item-' + id + ' .wt-item-name').val(name);
+			$input.hide().val('');
+			$('#wt-extra-' + id).show();
+		}
+	});
+}
+
+function wtPickCategory(id) {
+	$('#wt-item-' + id + ' .wt-item-name').focus();
+}
+
+function wtPickProduct(id) {
+	$('#wt-extra-' + id).show();
+	wtBindAutocomplete(id, 'product');
+}
+
+$('#wt-menu-tree').nestable({
+	maxDepth: 4,
+	group: 1
+}).on('change', function() {
+	wtUpdateJson();
+	wtCount();
+});
+
+$('#form-module').on('submit', function() {
+	wtUpdateJson();
+});
+
+wtInitItemAutocomplete();
+wtUpdateJson();
+wtCount();
+//--></script>
+{{ footer }}

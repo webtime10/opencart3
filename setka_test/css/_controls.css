@@ -1,0 +1,140 @@
+.wt_btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 9px 18px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.wt_btn:hover {
+  background: var(--accent-hover);
+  color: var(--accent-text);
+}
+
+.wt_btn_secondary {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.wt_btn_secondary:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  background: transparent;
+}
+
+.wt_btn_ghost {
+  background: transparent;
+  border-color: var(--header-muted);
+  color: var(--header-text);
+}
+
+.wt_btn_ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: transparent;
+}
+
+.wt_btn_block {
+  width: 100%;
+}
+
+.wt_btn_sm {
+  min-height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+}
+
+.wt_field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.wt_field label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.wt_input,
+.wt_select,
+.wt_textarea {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+select.wt_input,
+.wt_select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 34px;
+  background-image: none;
+}
+
+.wt_select_wrap select.wt_input,
+.wt_select_wrap .wt_select {
+  width: 100%;
+}
+
+.wt_textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.wt_input:focus,
+.wt_select:focus,
+.wt_textarea:focus {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+.wt_check,
+.wt_radio {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.wt_check input,
+.wt_radio input {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--accent);
+}
+
+.wt_controls_demo {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+@media (max-width: 767px) {
+  .wt_controls_demo {
+    grid-template-columns: 1fr;
+  }
+}

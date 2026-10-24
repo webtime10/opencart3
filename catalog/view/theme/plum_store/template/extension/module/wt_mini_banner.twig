@@ -1,0 +1,60 @@
+<div class="slider-container wt-mini-banner">
+  <div class="swiper wt-mini-swiper" id="wt-mini-{{ module }}">
+    <div class="swiper-wrapper">
+      {% for item in items %}
+      <div class="swiper-slide">
+        <div class="home-tile{% if item.percent %} home-tile--dark{% endif %}">
+          {% if item.image %}
+          <a class="wt-slide-img-link" href="{{ item.href }}">
+            <img class="wt-slide-img" src="{{ item.image }}" alt="{{ item.title }}" width="220" height="220" loading="lazy">
+          </a>
+          {% endif %}
+          {% if item.percent %}<span class="home-tile-badge">{{ item.percent }}</span>{% endif %}
+          <div class="home-tile-body">
+            {% if item.title %}<strong>{{ item.title }}</strong>{% endif %}
+            {% if item.description %}<span>{{ item.description }}</span>{% endif %}
+            <a class="btn btn-primary btn-sm home-tile-more" href="{{ item.href }}">{{ text_more }}</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% if items|length > 1 %}
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+    {% endif %}
+  </div>
+</div>
+<script>
+(function () {
+  var tries = 0;
+  function initWtMini{{ module }}() {
+    if (typeof Swiper === 'undefined') {
+      if (++tries < 80) setTimeout(initWtMini{{ module }}, 50);
+      return;
+    }
+    var el = document.getElementById('wt-mini-{{ module }}');
+    if (!el || el.swiper) return;
+    var multi = {{ items|length > 1 ? 'true' : 'false' }};
+    new Swiper(el, {
+      rewind: multi,
+      speed: 500,
+      slidesPerView: 1,
+      spaceBetween: 12,
+      {% if autoplay %}
+      autoplay: { delay: {{ autoplay }}, disableOnInteraction: false },
+      {% endif %}
+      navigation: multi ? {
+        nextEl: el.querySelector('.swiper-button-next'),
+        prevEl: el.querySelector('.swiper-button-prev')
+      } : undefined
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initWtMini{{ module }});
+  } else {
+    initWtMini{{ module }}();
+  }
+  window.addEventListener('load', initWtMini{{ module }});
+})();
+</script>

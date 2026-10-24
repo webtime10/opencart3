@@ -1,0 +1,65 @@
+{% if items %}
+<div class="vmenu" data-vmenu>
+  <ul class="vmenu-list" role="menu">
+    {% for item in items %}
+    {% set item_id = 'wt' ~ item.id %}
+    <li class="vmenu-item{% if not item.children %} vmenu-item--leaf{% endif %}" role="none" data-vmenu-item="{{ item_id }}"{% if not item.children %} data-vmenu-leaf="1"{% endif %}>
+      <a href="{{ item.href }}" role="menuitem">
+        {% if item.thumb %}
+        <span class="vmenu-ico" aria-hidden="true"><img src="{{ item.thumb }}" alt="" width="24" height="24"></span>
+        {% endif %}
+        <span class="vmenu-label">{{ item.name }}</span>
+        {% if item.children %}
+        <span class="vmenu-chev" aria-hidden="true">›</span>
+        {% endif %}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  <div class="vmenu-flyout" data-vmenu-flyout hidden>
+    {% for item in items %}
+    {% if item.children %}
+    {% set item_id = 'wt' ~ item.id %}
+    {% set cols = item.children|slice(0, 4) %}
+    {% set col_count = cols|length %}
+    <div class="vmenu-panel" data-vmenu-panel="{{ item_id }}" hidden>
+      <div class="vmenu-cols" style="--vmenu-cols: {{ col_count }};" data-cols="{{ col_count }}">
+        {# L2 = column (max 4), optional photo left #}
+        {% for child in cols %}
+        <div class="vmenu-col">
+          <h4 class="vmenu-col-title">
+            <a href="{{ child.href }}">
+              {% if child.thumb %}
+              <span class="vmenu-col-ico" aria-hidden="true"><img src="{{ child.thumb }}" alt="" width="40" height="40" loading="lazy"></span>
+              {% endif %}
+              <span class="vmenu-col-label">{{ child.name }}</span>
+            </a>
+          </h4>
+          {% if child.children %}
+          <ul>
+            {# L3 #}
+            {% for gchild in child.children %}
+            <li{% if gchild.children %} class="vmenu-has-sub"{% endif %}>
+              <a href="{{ gchild.href }}">{{ gchild.name }}</a>
+              {% if gchild.children %}
+              <ul class="vmenu-sub">
+                {# L4 #}
+                {% for ggchild in gchild.children %}
+                <li><a href="{{ ggchild.href }}">{{ ggchild.name }}</a></li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

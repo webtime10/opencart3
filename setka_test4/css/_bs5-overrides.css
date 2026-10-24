@@ -1,0 +1,23 @@
+/* Bootstrap 5.3 — desktop container only (rest = stock BS5) */
+/* Default xl=1140 → 1260; xxl=1320 → 1380 */
+
+@media (min-width: 1200px) {
+  .container,
+  .container-sm,
+  .container-md,
+  .container-lg,
+  .container-xl {
+    max-width: 1260px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .container,
+  .container-sm,
+  .container-md,
+  .container-lg,
+  .container-xl,
+  .container-xxl {
+    max-width: 1380px;
+  }
+}

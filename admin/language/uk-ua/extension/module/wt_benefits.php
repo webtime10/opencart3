@@ -1,0 +1,23 @@
+<?php
+$_['heading_title']     = 'WT Benefits';
+$_['text_extension']    = 'Доповнення';
+$_['text_success']      = 'Готово: модуль WT Benefits збережено!';
+$_['text_edit']         = 'Редагування WT Benefits';
+$_['text_enabled']      = 'Увімкнено';
+$_['text_disabled']     = 'Вимкнено';
+$_['text_items']        = 'Пункти';
+$_['text_item']         = 'Пункт';
+$_['text_no_items']     = 'Пунктів ще немає. Натисніть «Додати пункт».';
+$_['entry_name']        = 'Назва модуля';
+$_['entry_status']      = 'Статус';
+$_['entry_image']       = 'Логотип / іконка';
+$_['entry_title']       = 'Заголовок';
+$_['entry_description'] = 'Опис';
+$_['entry_sort_order']  = 'Порядок';
+$_['help_image']        = 'SVG (краще чорний контур) — колір на вітрині з теми.';
+$_['button_item_add']   = 'Додати пункт';
+$_['button_remove']     = 'Видалити';
+$_['button_save']       = 'Зберегти';
+$_['button_cancel']     = 'Скасувати';
+$_['error_permission']  = 'Немає прав на зміну WT Benefits!';
+$_['error_name']        = 'Назва модуля має бути від 3 до 64 символів!';

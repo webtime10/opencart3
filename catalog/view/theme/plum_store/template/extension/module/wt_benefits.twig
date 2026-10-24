@@ -1,0 +1,17 @@
+<section class="benefits-bar wt-benefits" id="wt-benefits-{{ module }}">
+  <div class="container">
+    <div class="benefits wt-benefits__grid" style="--wt-benefits-cols: {{ items|length }};">
+      {% for item in items %}
+      <div class="benefit wt-benefits__item">
+        {% if item.image %}
+        <span class="icon wt-benefits__icon" style="--wt-icon: url('{{ item.image }}')" aria-hidden="true"></span>
+        {% endif %}
+        <div class="wt-benefits__body">
+          {% if item.title %}<strong class="wt-benefits__title">{{ item.title }}</strong>{% endif %}
+          {% if item.text %}<span class="wt-benefits__text">{{ item.text }}</span>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

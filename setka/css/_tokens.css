@@ -1,0 +1,268 @@
+/* Color schemes only — layout sizes stay hardcoded in CSS */
+:root,
+body.theme-dark {
+  --topbar-bg: #1a1a1a;
+  --topbar-text: #c4c4c4;
+  --topbar-link: #ececec;
+  --topbar-border: #e4b91c;
+
+  --header-bg: #242424;
+  --header-text: #f5f5f5;
+  --header-muted: #a8a8a8;
+
+  --accent: #e4b91c;
+  --accent-hover: #f0c93a;
+  --accent-text: #1a1a1a;
+
+  --icon: #f0f0f0;
+  --badge-bg: #e4b91c;
+  --badge-text: #1a1a1a;
+
+  --search-bg: #ffffff;
+  --search-text: #2a2a2a;
+  --search-btn-bg: var(--accent);
+  --search-btn-text: var(--accent-text);
+
+  --benefits-bg: #242424;
+  --benefits-text: #f5f5f5;
+  --benefits-muted: #a8a8a8;
+
+  --page-bg: #f2f0ec;
+  --surface: #ffffff;
+  --text: #2a2a2a;
+  --text-muted: #6b6b6b;
+  --border: #ddd8d0;
+  --price: #2a2a2a;
+  --link: #2a2a2a;
+  --link-hover: #b8920f;
+
+  --footer-bg: #1a1a1a;
+  --footer-text: #b0b0b0;
+  --footer-title: #f5f5f5;
+
+  --danger: #c94a4a;
+  --success: #3d9a55;
+  --focus: #e4b91c;
+}
+
+/* Beige — dark topbar, white header, warm sand page, terracotta accent */
+body.theme-light {
+  --topbar-bg: #2c2824;
+  --topbar-text: #cfc6bc;
+  --topbar-link: #f3ebe3;
+  --topbar-border: #b86b4f;
+
+  --header-bg: #ffffff;
+  --header-text: #2a2420;
+  --header-muted: #7a7168;
+
+  --accent: #b86b4f;
+  --accent-hover: #a35a41;
+  --accent-text: #ffffff;
+
+  --icon: #2a2420;
+  --badge-bg: #b86b4f;
+  --badge-text: #ffffff;
+
+  --search-bg: #f4f0ea;
+  --search-text: #2a2420;
+  --search-btn-bg: var(--accent);
+  --search-btn-text: #ffffff;
+
+  --benefits-bg: #2c2824;
+  --benefits-text: #f3ebe3;
+  --benefits-muted: #b0a69c;
+
+  --page-bg: #e8e3d9;
+  --surface: #ffffff;
+  --text: #2a2420;
+  --text-muted: #6e655c;
+  --border: #d5cdc2;
+  --price: #2a2420;
+  --link: #2a2420;
+  --link-hover: #b86b4f;
+
+  --footer-bg: #2c2824;
+  --footer-text: #cfc6bc;
+  --footer-title: #f3ebe3;
+
+  --focus: #b86b4f;
+}
+
+body.theme-ocean {
+  --topbar-bg: #0a222c;
+  --topbar-text: #a8c0ca;
+  --topbar-link: #e8f2f6;
+  --topbar-border: #2a9fc7;
+
+  --header-bg: #123645;
+  --header-text: #f2f8fa;
+  --header-muted: #a8c0ca;
+
+  --accent: #2a9fc7;
+  --accent-hover: #3db0d6;
+  --accent-text: #062028;
+
+  --icon: #f2f8fa;
+  --badge-bg: #2a9fc7;
+  --badge-text: #062028;
+
+  --search-bg: #ffffff;
+  --search-text: #123645;
+  --search-btn-bg: var(--accent);
+  --search-btn-text: var(--accent-text);
+
+  --benefits-bg: #123645;
+  --benefits-text: #f2f8fa;
+  --benefits-muted: #a8c0ca;
+
+  --page-bg: #eef4f7;
+  --surface: #ffffff;
+  --text: #123645;
+  --text-muted: #5a7380;
+  --border: #d0dde4;
+  --price: #123645;
+  --link: #123645;
+  --link-hover: #2a9fc7;
+
+  --footer-bg: #0a222c;
+  --footer-text: #a8c0ca;
+  --footer-title: #f2f8fa;
+
+  --focus: #2a9fc7;
+}
+
+body.theme-plum {
+  --topbar-bg: #241420;
+  --topbar-text: #cbb6c5;
+  --topbar-link: #f3eaf0;
+  --topbar-border: #b85a82;
+
+  --header-bg: #3a2434;
+  --header-text: #f8f2f6;
+  --header-muted: #cbb6c5;
+
+  --accent: #b85a82;
+  --accent-hover: #c97095;
+  --accent-text: #ffffff;
+
+  --icon: #f8f2f6;
+  --badge-bg: #b85a82;
+  --badge-text: #ffffff;
+
+  --search-bg: #ffffff;
+  --search-text: #2a1526;
+  --search-btn-bg: var(--accent);
+  --search-btn-text: #ffffff;
+
+  --benefits-bg: #3a2434;
+  --benefits-text: #f8f2f6;
+  --benefits-muted: #cbb6c5;
+
+  --page-bg: #f6f1f4;
+  --surface: #ffffff;
+  --text: #2a1526;
+  --text-muted: #6e5568;
+  --border: #e5d6df;
+  --price: #3a2434;
+  --link: #3a2434;
+  --link-hover: #b85a82;
+
+  --footer-bg: #241420;
+  --footer-text: #cbb6c5;
+  --footer-title: #f8f2f6;
+
+  --focus: #b85a82;
+}
+
+/* Olive — dusty olive / warm sand (khaki mood, soft & practical) */
+body.theme-olive {
+  --topbar-bg: #e9e4d6;
+  --topbar-text: #5a5646;
+  --topbar-link: #2e2c24;
+  --topbar-border: #8a8658;
+
+  --header-bg: #ffffff;
+  --header-text: #2e2c24;
+  --header-muted: #6e6a58;
+
+  --accent: #8a8658;
+  --accent-hover: #747148;
+  --accent-text: #ffffff;
+
+  --icon: #2e2c24;
+  --badge-bg: #8a8658;
+  --badge-text: #ffffff;
+
+  --search-bg: #f5f2e9;
+  --search-text: #2e2c24;
+  --search-btn-bg: var(--accent);
+  --search-btn-text: #ffffff;
+
+  --benefits-bg: #e9e4d6;
+  --benefits-text: #2e2c24;
+  --benefits-muted: #6e6a58;
+
+  --page-bg: #efe9db;
+  --surface: #ffffff;
+  --text: #2e2c24;
+  --text-muted: #6e6a58;
+  --border: #d6cfbc;
+  --price: #2e2c24;
+  --link: #2e2c24;
+  --link-hover: #8a8658;
+
+  --footer-bg: #2e2c24;
+  --footer-text: #c9c3b0;
+  --footer-title: #f5f2e9;
+
+  --danger: #c94a4a;
+  --success: #6a8f5a;
+  --focus: #8a8658;
+}
+
+/* Emerald — light emerald green; white header vs mint page */
+body.theme-emerald {
+  --topbar-bg: #e6f2ec;
+  --topbar-text: #3d5c4d;
+  --topbar-link: #1f3d32;
+  --topbar-border: #2f8f6b;
+
+  --header-bg: #ffffff;
+  --header-text: #1f3d32;
+  --header-muted: #5a7a6a;
+
+  --accent: #2f8f6b;
+  --accent-hover: #267a5b;
+  --accent-text: #ffffff;
+
+  --icon: #1f3d32;
+  --badge-bg: #2f8f6b;
+  --badge-text: #ffffff;
+
+  --search-bg: #f2f8f5;
+  --search-text: #1f3d32;
+  --search-btn-bg: var(--accent);
+  --search-btn-text: #ffffff;
+
+  --benefits-bg: #e6f2ec;
+  --benefits-text: #1f3d32;
+  --benefits-muted: #5a7a6a;
+
+  --page-bg: #e8f1ec;
+  --surface: #ffffff;
+  --text: #1f3d32;
+  --text-muted: #5a7a6a;
+  --border: #c5dcd0;
+  --price: #1f3d32;
+  --link: #1f3d32;
+  --link-hover: #2f8f6b;
+
+  --footer-bg: #1f3d32;
+  --footer-text: #b8d4c6;
+  --footer-title: #f3faf6;
+
+  --danger: #c94a4a;
+  --success: #2f8f6b;
+  --focus: #2f8f6b;
+}
